@@ -6,6 +6,8 @@ interface iUser{
     role?:string;
     password:string;
     detail?: string;
+    image?: string;
+    imageID?: string;
     secretCode:string;
     verify:boolean;
     admins:{}[];
@@ -37,6 +39,12 @@ const userModel = new Schema({
         type:String,
     },
     detail:{
+        type:String,
+    },
+    image:{
+        type:String,
+    },
+    imageID:{
         type:String,
     },
     verify:{

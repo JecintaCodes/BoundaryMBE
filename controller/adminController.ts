@@ -2,6 +2,7 @@ import {Request,Response} from "express"
 import adminModel from "../model/adminModel"
 import { role } from "../utils/role";
 import {hash, genSalt, compare} from "bcrypt"
+import { streamUpload } from "../utils/stream";
 
 export const registerAdmin = async(req:Request, res:Response)=>{
     try {
@@ -110,4 +111,108 @@ export const getOneAdmin = async(req:Request, res:Response)=>{
             message:`error getting one in :${error}`
         }) 
     }
+}
+export const updateAdmin = async(req:Request,res:Response) =>{
+    try {
+        const {adminID} = req.params;
+        const {secure_url,public_id}:any = streamUpload(req)
+
+        const adminUpdate = await adminModel.findByIdAndUpdate(adminID,
+            {
+                image:secure_url,
+                imageID:public_id,
+            },
+            {
+                new:true
+            },
+        )
+        return res.status(201).json({
+            message:`${adminUpdate?.name} avatar updated `,
+            data: adminUpdate
+        })
+
+    } catch (error) {
+        return res.status(404).json({
+            message:"can't update admin avatar "
+        })
+    }
+}
+export const updateAdminName = async (req:Request,res:Response)=>{
+    try {
+        const {adminID} = req.params;
+        const {name} = req.body;
+
+        const admin = await adminModel.findByIdAndUpdate(
+            adminID,
+            {
+                name,
+            },
+            {
+                new:true
+            }
+        )
+        return res.status(201).json({
+            message:`${admin?.name} has updated her name `,
+            data: admin
+        })
+        
+    } catch (error:any) {
+        return res.status(404).json({
+            message:`error updating admin name ${error} `
+        })
+    }
+}
+export const updateAdminDetail = async (req:Request,res:Response)=>{
+    try {
+        const {adminID} = req.params;
+        const {detail} = req.body;
+
+        const admin = await adminModel.findByIdAndUpdate(
+            adminID,
+            {
+                detail,
+            },
+            {
+                new:true
+            }
+        )
+        return res.status(201).json({
+            message:`${admin?.name} has updated her name `,
+            data: admin
+        })
+        
+    } catch (error:any) {
+        return res.status(404).json({
+            message:`error updating admin name ${error} `
+        })
+    }
+}
+
+export const updateAdminInFo = async(req:Request, res:Response)=>{
+try {
+    const {adminID} = req.params;
+    const {name,detail, image,imageID} = req.body;
+    const {secure_url,public_id}:any = streamUpload(req);
+
+    const admin = await adminModel.findByIdAndUpdate(
+        adminID,
+        {
+            name,
+             detail,
+             image:secure_url,
+             imageID:public_id,
+        },
+        {new:true}
+    )
+
+    return res.status(201).json({
+        message:`${admin?.name} information updated `,
+        data:admin
+    })
+} catch (error) {
+    return res.status(404).json({
+        message:`error updating admin: ${error} `
+        
+    })
+}
 }

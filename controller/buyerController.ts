@@ -30,12 +30,14 @@ export const registerBuyer = async(req:Request, res:Response)=>{
         })
     }
 }
+
+
 export const signInBuyer = async(req:Request, res:Response)=>{
     try {
        const {email,password} = req.body 
 
        const buyer = await buyerModel.findOne({email})
-
+       console.log(buyer)
        if (buyer) {
 
       if (buyer?.verify) {
@@ -60,13 +62,13 @@ export const signInBuyer = async(req:Request, res:Response)=>{
       }
        } else {
         return res.status(404).json({
-            message:`please signin as buyer`
+            message:`please check your email`
         }) 
        }
 
-    } catch (error) {
+    } catch (error:any) {
         return res.status(404).json({
-            message:`error signing in :${error}`
+            message:`error signing in :${error.message}`
         }) 
     }
 
