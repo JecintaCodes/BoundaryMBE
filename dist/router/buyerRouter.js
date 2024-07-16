@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const buyerController_1 = require("../controller/buyerController");
+const buyerRouter = (0, express_1.Router)();
+buyerRouter.route("/register-buyer").post(buyerController_1.registerBuyer);
+buyerRouter.route("/sign-in-buyer").post(buyerController_1.signInBuyer);
+buyerRouter.route("/get-all-buyer").get(buyerController_1.getAllBuyers);
+buyerRouter.route("/:buyerID/get-one-buyer").get(buyerController_1.getOneBuyer);
+exports.default = buyerRouter;
