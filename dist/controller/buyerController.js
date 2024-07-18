@@ -15,12 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getOneBuyer = exports.getAllBuyers = exports.signInBuyer = exports.registerBuyer = void 0;
 const role_1 = require("../utils/role");
 const buyerModel_1 = __importDefault(require("../model/buyerModel"));
-const bcrypt_1 = require("bcrypt");
+const bcryptjs_1 = require("bcryptjs");
 const registerBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, email, password, } = req.body;
-        const salt = yield (0, bcrypt_1.genSalt)(10);
-        const harsh = yield (0, bcrypt_1.hash)(password, salt);
+        const salt = yield (0, bcryptjs_1.genSalt)(10);
+        const harsh = yield (0, bcryptjs_1.hash)(password, salt);
         const buyer = yield buyerModel_1.default.create({
             name,
             email,
@@ -47,7 +47,7 @@ const signInBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         console.log(buyer);
         if (buyer) {
             if (buyer === null || buyer === void 0 ? void 0 : buyer.verify) {
-                const comp = yield (0, bcrypt_1.compare)(password, buyer === null || buyer === void 0 ? void 0 : buyer.password);
+                const comp = yield (0, bcryptjs_1.compare)(password, buyer === null || buyer === void 0 ? void 0 : buyer.password);
                 if (comp) {
                     return res.status(201).json({
                         message: `welcome ${buyer.name}`,

@@ -1,7 +1,7 @@
 import {Request,Response} from "express"
 import adminModel from "../model/adminModel"
 import { role } from "../utils/role";
-import {hash, genSalt, compare} from "bcrypt"
+import {hash, genSalt, compare} from "bcryptjs"
 import userModel from "../model/userModel"
 import { Types } from "mongoose";
 import { streamUpload } from "../utils/stream";

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import userModel from "../model/userModel";
 import storeModel from "../model/storeModel";
 import {Types} from "mongoose"
-import {hash, compare, genSalt} from "bcrypt"
+import {hash, compare, genSalt} from "bcryptjs"
 import adminModel from "../model/adminModel";
 
 export const createStore = async(req:Request, res:Response)=>{

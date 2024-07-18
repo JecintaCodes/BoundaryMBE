@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateUserInfo = exports.updateUserDetail = exports.updateUserName = exports.updateUserImage = exports.getOneUser = exports.getAllUser = exports.signInUser = exports.registerUser = void 0;
 const adminModel_1 = __importDefault(require("../model/adminModel"));
 const role_1 = require("../utils/role");
-const bcrypt_1 = require("bcrypt");
+const bcryptjs_1 = require("bcryptjs");
 const userModel_1 = __importDefault(require("../model/userModel"));
 const mongoose_1 = require("mongoose");
 const stream_1 = require("../utils/stream");
@@ -28,8 +28,8 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (admin) {
             const secret = "AjegunleCore";
             if (secret === secretCode) {
-                const salt = yield (0, bcrypt_1.genSalt)(10);
-                const harsh = yield (0, bcrypt_1.hash)(password, salt);
+                const salt = yield (0, bcryptjs_1.genSalt)(10);
+                const harsh = yield (0, bcryptjs_1.hash)(password, salt);
                 const user = yield userModel_1.default.create({
                     name,
                     email,
@@ -69,7 +69,7 @@ const signInUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const { email, password } = req.body;
         const user = yield userModel_1.default.findOne({ email });
         if (user === null || user === void 0 ? void 0 : user.verify) {
-            const comp = yield (0, bcrypt_1.compare)(password, user === null || user === void 0 ? void 0 : user.password);
+            const comp = yield (0, bcryptjs_1.compare)(password, user === null || user === void 0 ? void 0 : user.password);
             if (comp) {
                 return res.status(201).json({
                     message: `welcome ${user.name}`,

@@ -16,7 +16,7 @@ exports.getOneStore = exports.getAllStores = exports.userDeleteStore = exports.a
 const userModel_1 = __importDefault(require("../model/userModel"));
 const storeModel_1 = __importDefault(require("../model/storeModel"));
 const mongoose_1 = require("mongoose");
-const bcrypt_1 = require("bcrypt");
+const bcryptjs_1 = require("bcryptjs");
 const adminModel_1 = __importDefault(require("../model/adminModel"));
 const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -25,8 +25,8 @@ const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const user = yield userModel_1.default.findById(userID);
         if (user) {
             const { storeName, storeUrl, StoreEmail, storeSocialMediaAcc, storeImg, storeDetail, category, password } = req.body;
-            const salt = yield (0, bcrypt_1.genSalt)(10);
-            const harsh = yield (0, bcrypt_1.hash)(password, salt);
+            const salt = yield (0, bcryptjs_1.genSalt)(10);
+            const harsh = yield (0, bcryptjs_1.hash)(password, salt);
             const store = yield storeModel_1.default.create({
                 storeName,
                 storeUrl,
@@ -72,7 +72,7 @@ const signInStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             const store = yield storeModel_1.default.findOne({ StoreEmail });
             console.log(store);
             if (store === null || store === void 0 ? void 0 : store.verify) {
-                const comp = yield (0, bcrypt_1.compare)(password, store === null || store === void 0 ? void 0 : store.password);
+                const comp = yield (0, bcryptjs_1.compare)(password, store === null || store === void 0 ? void 0 : store.password);
                 if (comp) {
                     return res.status(200).json({
                         message: `u signed in successfully ${store === null || store === void 0 ? void 0 : store.storeName}`,

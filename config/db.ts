@@ -10,8 +10,8 @@ export const boundM = async()=>{
      await connect(BounMark).then(()=>{
         console.log(`connected to ${BounMark}`)
        }) 
-    } catch (error) {
-        console.log(`error connecting to ${BounMark}`)
+    } catch (error:any) {
+        console.log(`error connecting to ${BounMark} ${error}`)
     }
 }
 

@@ -15,15 +15,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateAdminInFo = exports.updateAdminDetail = exports.updateAdminName = exports.updateAdmin = exports.getOneAdmin = exports.getAllAdmin = exports.signInAdmin = exports.registerAdmin = void 0;
 const adminModel_1 = __importDefault(require("../model/adminModel"));
 const role_1 = require("../utils/role");
-const bcrypt_1 = require("bcrypt");
+const bcryptjs_1 = require("bcryptjs");
 const stream_1 = require("../utils/stream");
 const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, email, password, secretCode } = req.body;
         const secret = "AjegunleCore";
         if (secret === secretCode) {
-            const salt = yield (0, bcrypt_1.genSalt)(10);
-            const harsh = yield (0, bcrypt_1.hash)(password, salt);
+            const salt = yield (0, bcryptjs_1.genSalt)(10);
+            const harsh = yield (0, bcryptjs_1.hash)(password, salt);
             const admin = yield adminModel_1.default.create({
                 name,
                 email,
@@ -56,7 +56,7 @@ const signInAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const admin = yield adminModel_1.default.findOne({ email });
         if (admin) {
             if (admin === null || admin === void 0 ? void 0 : admin.verify) {
-                const comp = yield (0, bcrypt_1.compare)(password, admin === null || admin === void 0 ? void 0 : admin.password);
+                const comp = yield (0, bcryptjs_1.compare)(password, admin === null || admin === void 0 ? void 0 : admin.password);
                 if (comp) {
                     return res.status(201).json({
                         message: `welcome ${admin.name}`,

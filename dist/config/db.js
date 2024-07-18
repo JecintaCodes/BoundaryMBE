@@ -24,7 +24,7 @@ const boundM = () => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
-        console.log(`error connecting to ${BounMark}`);
+        console.log(`error connecting to ${BounMark} ${error}`);
     }
 });
 exports.boundM = boundM;

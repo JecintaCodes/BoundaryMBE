@@ -1,7 +1,7 @@
 import {Request,Response} from "express"
 import { role } from "../utils/role";
 import buyerModel from "../model/buyerModel";
-import {hash,genSalt,compare} from "bcrypt"
+import {hash,genSalt,compare} from "bcryptjs"
 
 export const registerBuyer = async(req:Request, res:Response)=>{
     try {
