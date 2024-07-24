@@ -6,24 +6,28 @@ import { streamUpload } from "../utils/stream";
 
 export const registerAdmin = async(req:Request, res:Response)=>{
     try {
-       const {name, email, password, secretCode} = req.body;
+       const {name, email, password} = req.body;
 
-       const secret = "AjegunleCore"
+       const secretCode = "AjegunleCore"
 
-       if (secret === secretCode) {
+       if (secretCode === secretCode) {
 
         const salt = await genSalt(10);
         const harsh = await hash(password,salt)
+
+
+        // const sec = await genSalt(10);
+        // const secret = await hash(secretCode,sec)
 
         const admin = await adminModel.create({
             name,
             email,
             password:harsh,
-            secretCode:secret,
+            secretCode,
             role:role.admin,
             verify:true,
         })
-
+        console.log(admin)
         return res.status(201).json({
             message:"welcome please sign in",
             data:admin
@@ -34,25 +38,27 @@ export const registerAdmin = async(req:Request, res:Response)=>{
         })
        }
 
-    } catch (error) {
+    } catch (error:any) {
         return res.status(404).json({
-            message:`error signing in :${error}`
+            message:`error signing in :${error?.message}`
         })
     }
 }
 export const signInAdmin = async(req:Request, res:Response)=>{
     try {
-       const {email,password} = req.body; 
+       const {email,password,secretCode} = req.body; 
 
        const admin = await adminModel.findOne({email})
        if (admin) {
+
+        // const secretCompare = await compare(secretCode,admin?. secretCode)
 
        if (admin?.verify) {
 
         const comp = await compare(password,admin?.password)
 
        if (comp) {
-
+console.log(admin)
         return res.status(201).json({
             message:`welcome ${admin.name}`,
             data:admin._id
@@ -65,7 +71,7 @@ export const signInAdmin = async(req:Request, res:Response)=>{
 
        }else{
         return res.status(404).json({
-            message:`you are not verified as an admin`
+            message:`you are not verified as an admin, or incorrect secretCode`
         }) 
        }
 

@@ -30,8 +30,6 @@ export const registerBuyer = async(req:Request, res:Response)=>{
         })
     }
 }
-
-
 export const signInBuyer = async(req:Request, res:Response)=>{
     try {
        const {email,password} = req.body 
