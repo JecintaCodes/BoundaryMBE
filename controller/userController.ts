@@ -9,14 +9,14 @@ import { streamUpload } from "../utils/stream";
 export const registerUser = async(req:Request, res:Response)=>{
     try {
         const {adminID} = req.params;
-       const {name, email, password, secretCode} = req.body;
+       const {name, email, password} = req.body;
 
        const admin = await adminModel.findById(adminID)
 
      if (admin) {
-        const secret = "AjegunleCore"
+        // const secret = "AjegunleCore"
 
-        if (secret === secretCode) {
+        // if (secret === secretCode) {
  
          const salt = await genSalt(10);
          const harsh = await hash(password, salt)
@@ -25,7 +25,7 @@ export const registerUser = async(req:Request, res:Response)=>{
              name,
              email,
              password:harsh,
-             secretCode:secret,
+            //  secretCode:secret,
              role:role.user,
              verify:true,
          })
@@ -37,11 +37,11 @@ export const registerUser = async(req:Request, res:Response)=>{
              message:"welcome please sign in",
              data:user
          })
-        } else {
-         return res.status(400).json({
-             message:"your secret code is not correct"
-         })
-        }
+        // } else {
+        //  return res.status(400).json({
+        //      message:"your secret code is not correct"
+        //  })
+        // }
      } else {
         return res.status(400).json({
             message:"you are not an admin"

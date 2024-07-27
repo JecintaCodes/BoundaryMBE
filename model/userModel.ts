@@ -8,7 +8,7 @@ interface iUser{
     detail?: string;
     image?: string;
     imageID?: string;
-    secretCode:string;
+    // secretCode:string;
     verify:boolean;
     admins:{}[];
     stores:{}[];
@@ -50,10 +50,10 @@ const userModel = new Schema({
     verify:{
         type:Boolean,
     },
-    secretCode:{
-        type:String,
-        require:true,
-    },
+    // secretCode:{
+    //     type:String,
+    //     require:true,
+    // },
     admins:{
         type: Types.ObjectId,
         ref:"admins"

@@ -19,19 +19,22 @@ const bcryptjs_1 = require("bcryptjs");
 const stream_1 = require("../utils/stream");
 const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, email, password, secretCode } = req.body;
-        const secret = "AjegunleCore";
-        if (secret === secretCode) {
+        const { name, email, password } = req.body;
+        const secretCode = "AjegunleCore";
+        if (secretCode === secretCode) {
             const salt = yield (0, bcryptjs_1.genSalt)(10);
             const harsh = yield (0, bcryptjs_1.hash)(password, salt);
+            // const sec = await genSalt(10);
+            // const secret = await hash(secretCode,sec)
             const admin = yield adminModel_1.default.create({
                 name,
                 email,
                 password: harsh,
-                secretCode: secret,
+                secretCode,
                 role: role_1.role.admin,
                 verify: true,
             });
+            console.log(admin);
             return res.status(201).json({
                 message: "welcome please sign in",
                 data: admin
@@ -45,19 +48,21 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     catch (error) {
         return res.status(404).json({
-            message: `error signing in :${error}`
+            message: `error signing in :${error === null || error === void 0 ? void 0 : error.message}`
         });
     }
 });
 exports.registerAdmin = registerAdmin;
 const signInAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email, password } = req.body;
+        const { email, password, secretCode } = req.body;
         const admin = yield adminModel_1.default.findOne({ email });
         if (admin) {
+            // const secretCompare = await compare(secretCode,admin?. secretCode)
             if (admin === null || admin === void 0 ? void 0 : admin.verify) {
                 const comp = yield (0, bcryptjs_1.compare)(password, admin === null || admin === void 0 ? void 0 : admin.password);
                 if (comp) {
+                    console.log(admin);
                     return res.status(201).json({
                         message: `welcome ${admin.name}`,
                         data: admin._id
@@ -71,7 +76,7 @@ const signInAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             }
             else {
                 return res.status(404).json({
-                    message: `you are not verified as an admin`
+                    message: `you are not verified as an admin, or incorrect secretCode`
                 });
             }
         }
