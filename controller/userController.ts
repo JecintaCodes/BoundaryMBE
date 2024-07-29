@@ -29,6 +29,7 @@ export const registerUser = async(req:Request, res:Response)=>{
              role:role.user,
              verify:true,
          })
+         console.log(user)
 
          admin?.users?.push(new Types.ObjectId(user?._id))
          admin?.save();
@@ -61,6 +62,7 @@ export const signInUser = async(req:Request, res:Response)=>{
 
        if (user?.verify) {
 
+        console.log(user)
       const comp = await compare(password, user?.password)
 
       if (comp) {
@@ -69,6 +71,7 @@ export const signInUser = async(req:Request, res:Response)=>{
             message:`welcome ${user.name}`,
             data:user._id
         })
+        
 
       } else {
         return res.status(404).json({
