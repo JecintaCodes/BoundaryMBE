@@ -20,36 +20,40 @@ const userModel_1 = __importDefault(require("../model/userModel"));
 const mongoose_1 = require("mongoose");
 const stream_1 = require("../utils/stream");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
         const { adminID } = req.params;
-        const { name, email, password, secretCode } = req.body;
+        const { name, email, password } = req.body;
         const admin = yield adminModel_1.default.findById(adminID);
         if (admin) {
-            const secret = "AjegunleCore";
-            if (secret === secretCode) {
-                const salt = yield (0, bcryptjs_1.genSalt)(10);
-                const harsh = yield (0, bcryptjs_1.hash)(password, salt);
-                const user = yield userModel_1.default.create({
-                    name,
-                    email,
-                    password: harsh,
-                    secretCode: secret,
-                    role: role_1.role.user,
-                    verify: true,
-                });
-                (_a = admin === null || admin === void 0 ? void 0 : admin.users) === null || _a === void 0 ? void 0 : _a.push(new mongoose_1.Types.ObjectId(user === null || user === void 0 ? void 0 : user._id));
-                admin === null || admin === void 0 ? void 0 : admin.save();
-                return res.status(201).json({
-                    message: "welcome please sign in",
-                    data: user
-                });
+            // const secret = "AjegunleCore"
+            // if (secret === secretCode) {
+            const salt = yield (0, bcryptjs_1.genSalt)(10);
+            const harsh = yield (0, bcryptjs_1.hash)(password, salt);
+            const user = yield userModel_1.default.create({
+                name,
+                email,
+                password: harsh,
+                //  secretCode:secret,
+                role: role_1.role.user,
+                verify: true,
+            });
+            console.log(user);
+            if (!admin.users) {
+                admin.users = [];
             }
-            else {
-                return res.status(400).json({
-                    message: "your secret code is not correct"
-                });
-            }
+            admin.users.push(new mongoose_1.Types.ObjectId(user._id));
+            yield admin.save();
+            //  admin?.users?.push(new Types.ObjectId(user?._id))
+            //  admin?.save();
+            return res.status(201).json({
+                message: "welcome please sign in",
+                data: user
+            });
+            // } else {
+            //  return res.status(400).json({
+            //      message:"your secret code is not correct"
+            //  })
+            // }
         }
         else {
             return res.status(400).json({
@@ -69,6 +73,7 @@ const signInUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const { email, password } = req.body;
         const user = yield userModel_1.default.findOne({ email });
         if (user === null || user === void 0 ? void 0 : user.verify) {
+            // console.log(user)
             const comp = yield (0, bcryptjs_1.compare)(password, user === null || user === void 0 ? void 0 : user.password);
             if (comp) {
                 return res.status(201).json({

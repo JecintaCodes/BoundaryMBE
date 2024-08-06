@@ -31,10 +31,10 @@ const userModel = new mongoose_1.Schema({
     verify: {
         type: Boolean,
     },
-    secretCode: {
-        type: String,
-        require: true,
-    },
+    // secretCode:{
+    //     type:String,
+    //     require:true,
+    // },
     admins: {
         type: mongoose_1.Types.ObjectId,
         ref: "admins"

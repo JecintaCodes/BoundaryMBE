@@ -6,52 +6,45 @@ import userModel from "../model/userModel"
 import { Types } from "mongoose";
 import { streamUpload } from "../utils/stream";
 
-export const registerUser = async(req:Request, res:Response)=>{
+
+export const registerUser = async (req:Request, res:Response)=>{
     try {
+        
         const {adminID} = req.params;
-       const {name, email, password} = req.body;
+        const {name, email, password} = req.body;
 
-       const admin = await adminModel.findById(adminID)
+        const admin = await adminModel.findById(adminID)
 
-     if (admin) {
-        // const secret = "AjegunleCore"
+        if (admin) {
+            
+            const salt = await genSalt(30);
+            const harsh = await hash(password, salt)
 
-        // if (secret === secretCode) {
- 
-         const salt = await genSalt(10);
-         const harsh = await hash(password, salt)
- 
-         const user = await userModel.create({
-             name,
-             email,
-             password:harsh,
-            //  secretCode:secret,
-             role:role.user,
-             verify:true,
-         })
-         console.log(user)
+            const user = await userModel.create({
+                name,
+                email,
+                password,
+                verify:true,
+                role:role.user
 
-         admin?.users?.push(new Types.ObjectId(user?._id))
-         admin?.save();
- 
-         return res.status(201).json({
-             message:"welcome please sign in",
-             data:user
-         })
-        // } else {
-        //  return res.status(400).json({
-        //      message:"your secret code is not correct"
-        //  })
-        // }
-     } else {
-        return res.status(400).json({
-            message:"you are not an admin"
-        })
-     }
+            })
+            // admin?.users?.push(user?.name)
+            // admin?.save();
 
-    } catch (error) {
+            return res.status(404).json({
+                message:`u have successfully created ${user?.name}`,
+                data:user
+            })
+
+        } else {
+            return res.status(404).json({
+                message:`you are not an admin `
+            }) 
+        }
+
+    } catch (error:any) {
         return res.status(404).json({
-            message:`error signing up :${error}`
+            message:`error registering user ${error}`
         })
     }
 }
@@ -62,7 +55,7 @@ export const signInUser = async(req:Request, res:Response)=>{
 
        if (user?.verify) {
 
-        console.log(user)
+        // console.log(user)
       const comp = await compare(password, user?.password)
 
       if (comp) {
