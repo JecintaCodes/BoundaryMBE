@@ -6,21 +6,19 @@ const storeModel = new mongoose_1.Schema({
         type: String,
         require: true
     },
-    password: {
-        type: String,
-        require: true
-    },
     storeUrl: {
         type: String,
-        require: true
     },
-    StoreEmail: {
+    storeEmail: {
         type: String,
         require: true,
         unique: true,
         lowercase: true
     },
     storeImg: {
+        type: String,
+    },
+    storeImgID: {
         type: String,
     },
     storeDetail: {

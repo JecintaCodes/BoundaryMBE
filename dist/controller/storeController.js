@@ -12,98 +12,123 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOneStore = exports.getAllStores = exports.userDeleteStore = exports.adminDeleteStore = exports.searchStoreCategory = exports.getOneStoreUser = exports.getOneUserStore = exports.signInStore = exports.createStore = void 0;
+exports.getOneStore = exports.getAllStores = exports.userDeleteStore = exports.adminDeleteStore = exports.searchStoreCategory = exports.getOneStoreUser = exports.getOneUserStore = exports.createStore = void 0;
 const userModel_1 = __importDefault(require("../model/userModel"));
 const storeModel_1 = __importDefault(require("../model/storeModel"));
-const mongoose_1 = require("mongoose");
-const bcryptjs_1 = require("bcryptjs");
+// import {hash, compare, genSalt} from "bcryptjs"
 const adminModel_1 = __importDefault(require("../model/adminModel"));
+const stream_1 = require("../utils/stream");
+// export const createStore = async(req:Request, res:Response)=>{
+//    try {
+//     const {userID} = req.params;
+//     const {storeDetail,storeImgID,storeImg,category,storeUrl,storeSocialMediaAcc,storeName,storeEmail} = req.body;
+//     const {secure_url,public_id}:any = await streamUpload(req);
+//     const user = await userModel.findById(userID)
+//     if (user) {
+//         const store = await storeModel.create({
+//             storeEmail,
+//             storeName,
+//             storeImg:secure_url,
+//             storeImgID:public_id,
+//             storeDetail,
+//             storeSocialMediaAcc,
+//             storeUrl,
+//             verify:true,
+//         })
+//         user?.stores?.push(store?._id)
+//         return res.status(201).json({
+//             message:`${user?.name} created ${store?.storeName} `,
+//             data:store
+//         })
+//     } else {
+//         return res.status(404).json({
+//             message:"you are not a user"
+//         })
+//     }
+//    } catch (error:any) {
+//     return res.status(404).json({
+//         message:`cannot create store ${error?.message}`
+//     })
+//    }
+// }
 const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
+        console.log('Request body:', req.body);
         const { userID } = req.params;
-        console.log("start");
+        const { storeDetail, storeImgID, storeImg, category, storeUrl, storeSocialMediaAcc, storeName, storeEmail, } = req.body;
+        // Verify that all fields are present and not undefined
+        //   if (!storeDetail || !storeImgID || !storeImg || !category || !storeUrl || !storeSocialMediaAcc || !storeName || !storeEmail) {
+        //     throw new Error('Missing required fields');
+        //   }
+        const { secure_url, public_id } = yield (0, stream_1.streamUpload)(req);
+        console.log('Stream upload result:', secure_url, public_id);
         const user = yield userModel_1.default.findById(userID);
         if (user) {
-            const { storeName, storeUrl, StoreEmail, storeSocialMediaAcc, storeImg, storeDetail, category, password } = req.body;
-            const salt = yield (0, bcryptjs_1.genSalt)(10);
-            const harsh = yield (0, bcryptjs_1.hash)(password, salt);
             const store = yield storeModel_1.default.create({
+                storeEmail,
                 storeName,
-                storeUrl,
-                StoreEmail,
-                storeSocialMediaAcc,
-                storeImg,
+                storeImg: secure_url,
+                storeImgID: public_id,
                 storeDetail,
-                category,
-                password: harsh,
+                storeSocialMediaAcc,
+                storeUrl,
                 verify: true,
             });
-            store === null || store === void 0 ? void 0 : store.users.push(new mongoose_1.Types.ObjectId(user._id));
-            store === null || store === void 0 ? void 0 : store.save();
-            // console.log()
+            (_a = user === null || user === void 0 ? void 0 : user.stores) === null || _a === void 0 ? void 0 : _a.push(store === null || store === void 0 ? void 0 : store._id);
             return res.status(201).json({
-                message: ` ${user === null || user === void 0 ? void 0 : user.name} successfully created ${store === null || store === void 0 ? void 0 : store.storeName} store`,
-                data: store
-            });
-            return res.status(201).json({
-                message: `${user === null || user === void 0 ? void 0 : user.name} successfully created your ${store === null || store === void 0 ? void 0 : store.storeName}store`,
-                data: store
+                message: `${user === null || user === void 0 ? void 0 : user.name} created ${store === null || store === void 0 ? void 0 : store.storeName} `,
+                data: store,
             });
         }
         else {
-            return res.status(404).json({
-                message: ` you are not a user `
-            });
+            return res.status(404).json({ message: 'You are not a user' });
         }
     }
     catch (error) {
-        return res.status(404).json({
-            message: `can't create store ${error}`
+        console.error('Error creating store:', error);
+        return res.status(400).json({
+            message: `Cannot create store: ${error.message}`,
         });
     }
 });
 exports.createStore = createStore;
-const signInStore = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { userID } = req.params;
-        const { StoreEmail, password } = req.body;
-        const user = yield userModel_1.default.findById(userID);
-        if (user) {
-            const store = yield storeModel_1.default.findOne({ StoreEmail });
-            console.log(store);
-            if (store === null || store === void 0 ? void 0 : store.verify) {
-                const comp = yield (0, bcryptjs_1.compare)(password, store === null || store === void 0 ? void 0 : store.password);
-                if (comp) {
-                    return res.status(200).json({
-                        message: `u signed in successfully ${store === null || store === void 0 ? void 0 : store.storeName}`,
-                        data: store === null || store === void 0 ? void 0 : store._id
-                    });
-                }
-                else {
-                    return res.status(404).json({
-                        message: `Incorrect store Password`
-                    });
-                }
-            }
-            else {
-                return res.status(404).json({
-                    message: `you didn't create a store`
-                });
-            }
-        }
-        else {
-            return res.status(404).json({
-                message: `you are not a user`
-            });
-        }
-    }
-    catch (error) {
-        return res.status(404).json({
-            message: `can't sign in store :${error}`
-        });
-    }
-});
-exports.signInStore = signInStore;
+// export const signInStore = async(req:Request, res:Response)=>{
+//     try {
+//         const {userID} = req.params;
+//         const {StoreEmail,password} = req.body;
+//         const user = await userModel.findById(userID);
+//         if (user) {
+//             const store = await storeModel.findOne({StoreEmail});
+//             console.log(store)
+//        if (store?.verify) {
+//       const comp = await compare(password, store?.password)
+//        if (comp) {
+//         return res.status(200).json({
+//             message:`u signed in successfully ${store?.storeName}`,
+//             data:store?._id
+//         })
+//        } else {
+//          return res.status(404).json({
+//             message:`Incorrect store Password`
+//         }) 
+//        }
+//        } else {
+//         return res.status(404).json({
+//             message:`you didn't create a store`
+//         }) 
+//        }
+//         } else {
+//             return res.status(404).json({
+//                 message:`you are not a user`
+//             })   
+//         }
+//     } catch (error) {
+//         return res.status(404).json({
+//             message:`can't sign in store :${error}`
+//         })
+//     }
+// } 
 const getOneUserStore = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userID, storeID } = req.params;

@@ -28,8 +28,6 @@ export const registerUser = async (req:Request, res:Response)=>{
                 role:role.user
 
             })
-            // admin?.users?.push(user?.name)
-            // admin?.save();
 
             return res.status(404).json({
                 message:`u have successfully created ${user?.name}`,

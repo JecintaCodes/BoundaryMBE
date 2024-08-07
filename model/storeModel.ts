@@ -3,14 +3,15 @@ import {model, Schema, Document,Types} from "mongoose"
 
 interface iStore{
     storeName: string;
-    storeUrl:string;
-    StoreEmail:string;
+    storeUrl?:string;
+    storeEmail:string;
     storeSocialMediaAcc?:string;
     category:string;
     storeImg:string;
-    password:string;
+    storeImgID:string;
     verify:boolean;
     storeDetail?:string;
+    products:{}[];
     users:{}[];
     admins:{}[];
 
@@ -23,21 +24,19 @@ const storeModel = new Schema({
         type:String,
         require:true
     },
-    password:{
-        type:String,
-        require:true
-    },
     storeUrl:{
-        type:String,
-        require:true
+        type:String,     
     },
-    StoreEmail:{
+    storeEmail:{
         type:String,
         require:true,
         unique:true,
         lowercase:true
     },
     storeImg:{
+        type:String,
+    },
+    storeImgID:{
         type:String,
     },
     storeDetail:{
@@ -56,6 +55,10 @@ const storeModel = new Schema({
     users:[{
         type:Types.ObjectId,
         ref:"users"
+    }],
+    products:[{
+        type:Types.ObjectId,
+        ref:"products"
     }],
     admins:[{
         type:Types.ObjectId,

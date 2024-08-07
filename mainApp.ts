@@ -7,6 +7,7 @@ import storeRouter from "./router/storeRouter"
 import helmet from "helmet"
 import morgan from "morgan"
 import orderRouter from "./router/orderRouter"
+import productRouter from "./router/productRouter"
 
 export const mainApp = (app:Application )=>{
     app.use(cors())
@@ -20,6 +21,7 @@ export const mainApp = (app:Application )=>{
     app.use("/api/v1",buyerRouter)
     app.use("/api/v1",storeRouter)
     app.use("/api/v1",orderRouter)
+    app.use("/api/v1",productRouter)
 
     app.get("/",(req:Request,res:Response)=>{
         try {

@@ -17,7 +17,6 @@ const adminModel_1 = __importDefault(require("../model/adminModel"));
 const role_1 = require("../utils/role");
 const bcryptjs_1 = require("bcryptjs");
 const userModel_1 = __importDefault(require("../model/userModel"));
-const mongoose_1 = require("mongoose");
 const stream_1 = require("../utils/stream");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -25,45 +24,29 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const { name, email, password } = req.body;
         const admin = yield adminModel_1.default.findById(adminID);
         if (admin) {
-            // const secret = "AjegunleCore"
-            // if (secret === secretCode) {
-            const salt = yield (0, bcryptjs_1.genSalt)(10);
+            const salt = yield (0, bcryptjs_1.genSalt)(30);
             const harsh = yield (0, bcryptjs_1.hash)(password, salt);
             const user = yield userModel_1.default.create({
                 name,
                 email,
-                password: harsh,
-                //  secretCode:secret,
-                role: role_1.role.user,
+                password,
                 verify: true,
+                role: role_1.role.user
             });
-            console.log(user);
-            if (!admin.users) {
-                admin.users = [];
-            }
-            admin.users.push(new mongoose_1.Types.ObjectId(user._id));
-            yield admin.save();
-            //  admin?.users?.push(new Types.ObjectId(user?._id))
-            //  admin?.save();
-            return res.status(201).json({
-                message: "welcome please sign in",
+            return res.status(404).json({
+                message: `u have successfully created ${user === null || user === void 0 ? void 0 : user.name}`,
                 data: user
             });
-            // } else {
-            //  return res.status(400).json({
-            //      message:"your secret code is not correct"
-            //  })
-            // }
         }
         else {
-            return res.status(400).json({
-                message: "you are not an admin"
+            return res.status(404).json({
+                message: `you are not an admin `
             });
         }
     }
     catch (error) {
         return res.status(404).json({
-            message: `error signing up :${error}`
+            message: `error registering user ${error}`
         });
     }
 });
