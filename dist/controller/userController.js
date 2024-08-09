@@ -20,6 +20,7 @@ const userModel_1 = __importDefault(require("../model/userModel"));
 const stream_1 = require("../utils/stream");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log("reading:");
         const { adminID } = req.params;
         const { name, email, password } = req.body;
         const admin = yield adminModel_1.default.findById(adminID);
@@ -29,11 +30,11 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             const user = yield userModel_1.default.create({
                 name,
                 email,
-                password,
+                password: harsh,
                 verify: true,
                 role: role_1.role.user
             });
-            return res.status(404).json({
+            return res.status(201).json({
                 message: `u have successfully created ${user === null || user === void 0 ? void 0 : user.name}`,
                 data: user
             });

@@ -2,11 +2,13 @@ import { Document, model, Schema, Types} from "mongoose"
 
 
 interface iProduct{
-    name:string;
+    title:string;
     img: string;
+    description?: string;
     amount:number;
-    total:number;
+    QTYinStock:number;
     storeID:string;
+    toggle:boolean;
     stores:[];
     users:{}[];
     admins:{};
@@ -15,12 +17,16 @@ interface iProduct{
 interface iProductData extends iProduct, Document{}
 
 const productModel = new Schema({
-    name:{
+    title:{
         type:String,
         require:true,
     },
     img:{
         type:String,
+    },
+    description:{
+        type:String,
+        
     },
     storeID:{
         type:String,
@@ -28,8 +34,13 @@ const productModel = new Schema({
     amount:{
         type:Number,
     },
-    total:{
+    toggle:{
+        type:Boolean,
+        default:false,
+    },
+    QTYinStock:{
         type:Number,
+        default:0,
     },
     stores:[{
         type:Types.ObjectId,

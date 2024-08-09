@@ -19,9 +19,9 @@ const bcryptjs_1 = require("bcryptjs");
 const stream_1 = require("../utils/stream");
 const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, email, password } = req.body;
-        const secretCode = "AjegunleCore";
-        if (secretCode === secretCode) {
+        const { name, email, password, secretCode } = req.body;
+        const secret = "AjegunleCore";
+        if (secret === secretCode) {
             const salt = yield (0, bcryptjs_1.genSalt)(10);
             const harsh = yield (0, bcryptjs_1.hash)(password, salt);
             // const sec = await genSalt(10);
@@ -30,7 +30,7 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 name,
                 email,
                 password: harsh,
-                secretCode,
+                secretCode: secret,
                 role: role_1.role.admin,
                 verify: true,
             });

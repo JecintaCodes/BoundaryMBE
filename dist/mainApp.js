@@ -13,6 +13,7 @@ const storeRouter_1 = __importDefault(require("./router/storeRouter"));
 const helmet_1 = __importDefault(require("helmet"));
 const morgan_1 = __importDefault(require("morgan"));
 const orderRouter_1 = __importDefault(require("./router/orderRouter"));
+const productRouter_1 = __importDefault(require("./router/productRouter"));
 const mainApp = (app) => {
     app.use((0, cors_1.default)());
     app.use(express_1.default.json());
@@ -23,6 +24,7 @@ const mainApp = (app) => {
     app.use("/api/v1", buyerRouter_1.default);
     app.use("/api/v1", storeRouter_1.default);
     app.use("/api/v1", orderRouter_1.default);
+    app.use("/api/v1", productRouter_1.default);
     app.get("/", (req, res) => {
         try {
             return res.status(200).json({

@@ -6,96 +6,98 @@ import {Types} from "mongoose"
 import adminModel from "../model/adminModel";
 import { streamUpload } from "../utils/stream";
 
-// export const createStore = async(req:Request, res:Response)=>{
-//    try {
+export const createStore = async(req:Request, res:Response)=>{
+   try {
 
-//     const {userID} = req.params;
-//     const {storeDetail,storeImgID,storeImg,category,storeUrl,storeSocialMediaAcc,storeName,storeEmail} = req.body;
-//     const {secure_url,public_id}:any = await streamUpload(req);
+    const {userID} = req.params;
+    const {storeDetail,storeImgID,storeImg,category,storeUrl,storeSocialMediaAcc,storeName,storeEmail,description} = req.body;
+    const {secure_url,public_id}:any = await streamUpload(req);
 
-//     const user = await userModel.findById(userID)
+    const user = await userModel.findById(userID)
 
-//     if (user) {
+    if (user) {
 
-//         const store = await storeModel.create({
-//             storeEmail,
-//             storeName,
-//             storeImg:secure_url,
-//             storeImgID:public_id,
-//             storeDetail,
-//             storeSocialMediaAcc,
-//             storeUrl,
-//             verify:true,
-//         })
-//         user?.stores?.push(store?._id)
-
-//         return res.status(201).json({
-//             message:`${user?.name} created ${store?.storeName} `,
-//             data:store
-//         })
-//     } else {
-//         return res.status(404).json({
-//             message:"you are not a user"
-//         })
-//     }
-    
-//    } catch (error:any) {
-//     return res.status(404).json({
-//         message:`cannot create store ${error?.message}`
-//     })
-//    }
-
-// }
-
-export const createStore = async (req: Request, res: Response) => {
-    try {
-      console.log('Request body:', req.body);
-      const { userID } = req.params;
-      const {
-        storeDetail,
-        storeImgID,
-        storeImg,
-        category,
-        storeUrl,
-        storeSocialMediaAcc,
-        storeName,
-        storeEmail,
-      } = req.body;
-  
-      // Verify that all fields are present and not undefined
-    //   if (!storeDetail || !storeImgID || !storeImg || !category || !storeUrl || !storeSocialMediaAcc || !storeName || !storeEmail) {
-    //     throw new Error('Missing required fields');
-    //   }
-      const { secure_url, public_id }: any = await streamUpload(req);
-      console.log('Stream upload result:', secure_url, public_id);
-  
-      const user = await userModel.findById(userID);
-      if (user) {
         const store = await storeModel.create({
-          storeEmail,
-          storeName,
-          storeImg: secure_url,
-          storeImgID: public_id,
-          storeDetail,
-          storeSocialMediaAcc,
-          storeUrl,
-          verify: true,
-        });
-        user?.stores?.push(store?._id);
+            storeEmail,
+            storeName,
+            storeImg:secure_url,
+            storeImgID:public_id,
+            storeDetail,
+            storeSocialMediaAcc,
+            storeUrl,
+            verify:true,
+            category,
+            description,
+        })
+        user?.stores?.push(store?._id)
+        user.save()
         return res.status(201).json({
-          message: `${user?.name} created ${store?.storeName} `,
-          data: store,
-        });
-      } else {
-        return res.status(404).json({ message: 'You are not a user' });
-      }
-    } catch (error: any) {
-      console.error('Error creating store:', error);
-      return res.status(400).json({
-        message: `Cannot create store: ${error.message}`,
-      });
+            message:`${user?.name} created ${store?.storeName} `,
+            data:store
+        })
+    } else {
+        return res.status(404).json({
+            message:"you are not a user"
+        })
     }
-  };
+    
+   } catch (error:any) {
+    return res.status(404).json({
+        message:`cannot create store ${error?.message}`
+    })
+   }
+
+}
+
+// export const createStore = async (req: Request, res: Response) => {
+//     try {
+//       console.log('Request body:', req.body);
+//       const { userID } = req.params;
+//       const {
+//         storeDetail,
+//         storeImgID,
+//         storeImg,
+//         category,
+//         storeUrl,
+//         storeSocialMediaAcc,
+//         storeName,
+//         storeEmail,
+//       } = req.body;
+  
+//       // Verify that all fields are present and not undefined
+//     //   if (!storeDetail || !storeImgID || !storeImg || !category || !storeUrl || !storeSocialMediaAcc || !storeName || !storeEmail) {
+//     //     throw new Error('Missing required fields');
+//     //   }
+//       const { secure_url, public_id }: any = await streamUpload(req);
+//       console.log('Stream upload result:', secure_url, public_id);
+  
+//       const user = await userModel.findById(userID);
+//       if (user) {
+//         const store = await storeModel.create({
+//           storeEmail,
+//           storeName,
+//           storeImg: secure_url,
+//           storeImgID: public_id,
+//           storeDetail,
+//           storeSocialMediaAcc,
+//           storeUrl,
+//           verify: true,
+//         });
+//         user?.stores?.push(store?._id);
+//         return res.status(201).json({
+//           message: `${user?.name} created ${store?.storeName} `,
+//           data: store,
+//         });
+//       } else {
+//         return res.status(404).json({ message: 'You are not a user' });
+//       }
+//     } catch (error: any) {
+//       console.error('Error creating store:', error);
+//       return res.status(400).json({
+//         message: `Cannot create store: ${error.message}`,
+//       });
+//     }
+//   };
   
 // export const signInStore = async(req:Request, res:Response)=>{
 //     try {

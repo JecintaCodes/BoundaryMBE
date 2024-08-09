@@ -12,57 +12,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOneStore = exports.getAllStores = exports.userDeleteStore = exports.adminDeleteStore = exports.searchStoreCategory = exports.getOneStoreUser = exports.getOneUserStore = exports.createStore = void 0;
+exports.getStoreProducts = exports.getOneStore = exports.getAllStores = exports.userDeleteStore = exports.adminDeleteStore = exports.searchStoreName = exports.searchStoreCategory = exports.getOneStoreUser = exports.getOneUserStore = exports.createStore = void 0;
 const userModel_1 = __importDefault(require("../model/userModel"));
 const storeModel_1 = __importDefault(require("../model/storeModel"));
 // import {hash, compare, genSalt} from "bcryptjs"
 const adminModel_1 = __importDefault(require("../model/adminModel"));
 const stream_1 = require("../utils/stream");
-// export const createStore = async(req:Request, res:Response)=>{
-//    try {
-//     const {userID} = req.params;
-//     const {storeDetail,storeImgID,storeImg,category,storeUrl,storeSocialMediaAcc,storeName,storeEmail} = req.body;
-//     const {secure_url,public_id}:any = await streamUpload(req);
-//     const user = await userModel.findById(userID)
-//     if (user) {
-//         const store = await storeModel.create({
-//             storeEmail,
-//             storeName,
-//             storeImg:secure_url,
-//             storeImgID:public_id,
-//             storeDetail,
-//             storeSocialMediaAcc,
-//             storeUrl,
-//             verify:true,
-//         })
-//         user?.stores?.push(store?._id)
-//         return res.status(201).json({
-//             message:`${user?.name} created ${store?.storeName} `,
-//             data:store
-//         })
-//     } else {
-//         return res.status(404).json({
-//             message:"you are not a user"
-//         })
-//     }
-//    } catch (error:any) {
-//     return res.status(404).json({
-//         message:`cannot create store ${error?.message}`
-//     })
-//    }
-// }
 const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        console.log('Request body:', req.body);
         const { userID } = req.params;
-        const { storeDetail, storeImgID, storeImg, category, storeUrl, storeSocialMediaAcc, storeName, storeEmail, } = req.body;
-        // Verify that all fields are present and not undefined
-        //   if (!storeDetail || !storeImgID || !storeImg || !category || !storeUrl || !storeSocialMediaAcc || !storeName || !storeEmail) {
-        //     throw new Error('Missing required fields');
-        //   }
+        const { storeDetail, storeImgID, storeImg, category, storeUrl, storeSocialMediaAcc, storeName, storeEmail } = req.body;
         const { secure_url, public_id } = yield (0, stream_1.streamUpload)(req);
-        console.log('Stream upload result:', secure_url, public_id);
         const user = yield userModel_1.default.findById(userID);
         if (user) {
             const store = yield storeModel_1.default.create({
@@ -76,23 +37,72 @@ const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 verify: true,
             });
             (_a = user === null || user === void 0 ? void 0 : user.stores) === null || _a === void 0 ? void 0 : _a.push(store === null || store === void 0 ? void 0 : store._id);
+            user.save();
             return res.status(201).json({
                 message: `${user === null || user === void 0 ? void 0 : user.name} created ${store === null || store === void 0 ? void 0 : store.storeName} `,
-                data: store,
+                data: store
             });
         }
         else {
-            return res.status(404).json({ message: 'You are not a user' });
+            return res.status(404).json({
+                message: "you are not a user"
+            });
         }
     }
     catch (error) {
-        console.error('Error creating store:', error);
-        return res.status(400).json({
-            message: `Cannot create store: ${error.message}`,
+        return res.status(404).json({
+            message: `cannot create store ${error === null || error === void 0 ? void 0 : error.message}`
         });
     }
 });
 exports.createStore = createStore;
+// export const createStore = async (req: Request, res: Response) => {
+//     try {
+//       console.log('Request body:', req.body);
+//       const { userID } = req.params;
+//       const {
+//         storeDetail,
+//         storeImgID,
+//         storeImg,
+//         category,
+//         storeUrl,
+//         storeSocialMediaAcc,
+//         storeName,
+//         storeEmail,
+//       } = req.body;
+//       // Verify that all fields are present and not undefined
+//     //   if (!storeDetail || !storeImgID || !storeImg || !category || !storeUrl || !storeSocialMediaAcc || !storeName || !storeEmail) {
+//     //     throw new Error('Missing required fields');
+//     //   }
+//       const { secure_url, public_id }: any = await streamUpload(req);
+//       console.log('Stream upload result:', secure_url, public_id);
+//       const user = await userModel.findById(userID);
+//       if (user) {
+//         const store = await storeModel.create({
+//           storeEmail,
+//           storeName,
+//           storeImg: secure_url,
+//           storeImgID: public_id,
+//           storeDetail,
+//           storeSocialMediaAcc,
+//           storeUrl,
+//           verify: true,
+//         });
+//         user?.stores?.push(store?._id);
+//         return res.status(201).json({
+//           message: `${user?.name} created ${store?.storeName} `,
+//           data: store,
+//         });
+//       } else {
+//         return res.status(404).json({ message: 'You are not a user' });
+//       }
+//     } catch (error: any) {
+//       console.error('Error creating store:', error);
+//       return res.status(400).json({
+//         message: `Cannot create store: ${error.message}`,
+//       });
+//     }
+//   };
 // export const signInStore = async(req:Request, res:Response)=>{
 //     try {
 //         const {userID} = req.params;
@@ -205,6 +215,22 @@ const searchStoreCategory = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.searchStoreCategory = searchStoreCategory;
+const searchStoreName = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { storeName } = req.body;
+        const store = yield storeModel_1.default.find({ storeName });
+        return res.status(201).json({
+            message: "one storeName gotten",
+            data: store
+        });
+    }
+    catch (error) {
+        return res.status(404).json({
+            message: `error ${error}`
+        });
+    }
+});
+exports.searchStoreName = searchStoreName;
 const adminDeleteStore = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { adminID, storeID } = req.params;
@@ -292,3 +318,26 @@ const getOneStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getOneStore = getOneStore;
+const getStoreProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { storeID } = req.params;
+        const store = yield storeModel_1.default.findById(storeID).populate({
+            path: "products",
+            options: {
+                sorts: ({
+                    createdAt: -1
+                })
+            }
+        });
+        return res.status(200).json({
+            message: "gotten one store products",
+            data: store
+        });
+    }
+    catch (error) {
+        return res.status(404).json({
+            message: `error getting store products ${error}`,
+        });
+    }
+});
+exports.getStoreProducts = getStoreProducts;

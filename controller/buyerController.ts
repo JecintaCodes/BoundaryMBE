@@ -2,6 +2,7 @@ import {Request,Response} from "express"
 import { role } from "../utils/role";
 import buyerModel from "../model/buyerModel";
 import {hash,genSalt,compare} from "bcryptjs"
+import { streamUpload } from "../utils/stream";
 
 export const registerBuyer = async(req:Request, res:Response)=>{
     try {
@@ -83,6 +84,40 @@ export const getAllBuyers = async(req:Request, res:Response)=>{
         return res.status(404).json({
             message:`error signing in :${error}`
         }) 
+    }
+}
+export const UpdateOneBuyer = async(req:Request, res:Response)=>{
+    try {
+        const {secure_url,public_id}:any =await streamUpload(req);
+       const {buyerID} = req.params;
+       const {name,details,image, imageID  } = req.body;
+
+       const buyer = await buyerModel.findById(buyerID)
+       
+   if (buyer) {
+    const update = await buyerModel.findByIdAndUpdate(buyerID,{
+        name,
+        details,
+        image:secure_url,
+        imageID:public_id,
+       }).sort({
+        cretedAt: -1
+       })
+
+       return res.status(201).json({
+        message:" buyer updated",
+        data:update
+       })
+   } else {
+    return res.status(404).json({
+        message:`you are not a buyer `,
+    })
+   }
+       
+    } catch (error) {
+        return res.status(404).json({
+            message:`can't get one buyer ${error} `,
+        })
     }
 }
 export const getOneBuyer = async(req:Request, res:Response)=>{

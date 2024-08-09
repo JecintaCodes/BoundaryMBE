@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const productController_1 = require("../controller/productController");
+const multer_1 = __importDefault(require("multer"));
+const upload = (0, multer_1.default)().single("image");
+const productRouter = (0, express_1.Router)();
+productRouter.route("/create-product").post(upload, productController_1.createProduct);
+productRouter.route("/get-one-product").get(productController_1.readOneProduct);
+productRouter.route("/get-all-product").get(productController_1.readProduct);
+productRouter.route("/update-product").patch(upload, productController_1.updateProduct);
+productRouter.route("/update-product-amount").patch(productController_1.updateProductAmount);
+productRouter.route("/update-product-name").patch(productController_1.updateProductName);
+productRouter.route("/update-product-img").patch(upload, productController_1.updateProductImg);
+productRouter.route("/update-product-total").patch(productController_1.updateProductTotal);
+productRouter.route("/delete-product").delete(productController_1.deleteProduct);
+productRouter.route("/admin-delete-product").delete(productController_1.deleteProduct);
+exports.default = productRouter;

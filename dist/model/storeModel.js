@@ -38,6 +38,10 @@ const storeModel = new mongoose_1.Schema({
             type: mongoose_1.Types.ObjectId,
             ref: "users"
         }],
+    products: [{
+            type: mongoose_1.Types.ObjectId,
+            ref: "products"
+        }],
     admins: [{
             type: mongoose_1.Types.ObjectId,
             ref: "users"

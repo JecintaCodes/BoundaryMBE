@@ -2,6 +2,7 @@ import { model, Document,Schema,Types } from "mongoose"
 
 interface iBuyer{
     name: string;
+    details?:string;
     email: string;
     image?:string;
     imageID?:string;
@@ -25,11 +26,15 @@ const buyerModel = new Schema({
     },
     image:{
         type:String,
-        require:true,
+       
     },
     imageID:{
         type:String,
-        require:true,
+    
+    },
+    details:{
+        type:String,
+    
     },
     email:{
         type:String,

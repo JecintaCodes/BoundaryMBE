@@ -6,11 +6,11 @@ import { streamUpload } from "../utils/stream";
 
 export const registerAdmin = async(req:Request, res:Response)=>{
     try {
-       const {name, email, password} = req.body;
+       const {name, email, password, secretCode} = req.body;
 
-       const secretCode = "AjegunleCore"
+       const secret = "AjegunleCore"
 
-       if (secretCode === secretCode) {
+       if (secret=== secretCode) {
 
         const salt = await genSalt(10);
         const harsh = await hash(password,salt)
@@ -23,7 +23,7 @@ export const registerAdmin = async(req:Request, res:Response)=>{
             name,
             email,
             password:harsh,
-            secretCode,
+            secretCode:secret,
             role:role.admin,
             verify:true,
         })
@@ -61,7 +61,8 @@ export const signInAdmin = async(req:Request, res:Response)=>{
 console.log(admin)
         return res.status(201).json({
             message:`welcome ${admin.name}`,
-            data:admin._id
+            data:admin.email,
+        
         })
        } else {
         return res.status(404).json({

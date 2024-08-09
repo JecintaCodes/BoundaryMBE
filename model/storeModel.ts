@@ -3,6 +3,7 @@ import {model, Schema, Document,Types} from "mongoose"
 
 interface iStore{
     storeName: string;
+    description?: string;
     storeUrl?:string;
     storeEmail:string;
     storeSocialMediaAcc?:string;
@@ -25,6 +26,9 @@ const storeModel = new Schema({
         require:true
     },
     storeUrl:{
+        type:String,     
+    },
+    description:{
         type:String,     
     },
     storeEmail:{
