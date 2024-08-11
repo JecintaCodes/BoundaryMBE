@@ -31,31 +31,31 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                     email: buyer === null || buyer === void 0 ? void 0 : buyer.email,
                     customersName: buyer === null || buyer === void 0 ? void 0 : buyer.name,
                     status: status,
-                    ids: buyer === null || buyer === void 0 ? void 0 : buyer._id
+                    ids: buyer === null || buyer === void 0 ? void 0 : buyer._id,
                 });
                 // console.log(c)
                 // console.log("starting here")
                 // console.log("")
                 return res.status(200).json({
                     message: `your order from ${store === null || store === void 0 ? void 0 : store.storeName} is successfull ${buyer === null || buyer === void 0 ? void 0 : buyer.name}`,
-                    data: order
+                    data: order,
                 });
             }
             else {
                 return res.status(404).json({
-                    message: `you did not order so email is not here`
+                    message: `you did not order so email is not here`,
                 });
             }
         }
         else {
             return res.status(404).json({
-                message: `you did not click on any store   `
+                message: `you did not click on any store   `,
             });
         }
     }
     catch (error) {
         return res.status(404).json({
-            message: `your order did not create due to ${error}`
+            message: `your order did not create due to ${error}`,
         });
     }
 });

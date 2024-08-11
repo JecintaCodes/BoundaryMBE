@@ -22,7 +22,7 @@ const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     var _a;
     try {
         const { userID } = req.params;
-        const { storeDetail, storeImgID, storeImg, category, storeUrl, storeSocialMediaAcc, storeName, storeEmail, description } = req.body;
+        const { storeDetail, storeImgID, storeImg, category, storeUrl, storeSocialMediaAcc, storeName, storeEmail, description, } = req.body;
         const { secure_url, public_id } = yield (0, stream_1.streamUpload)(req);
         const user = yield userModel_1.default.findById(userID);
         if (user) {
@@ -42,18 +42,18 @@ const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             user.save();
             return res.status(201).json({
                 message: `${user === null || user === void 0 ? void 0 : user.name} created ${store === null || store === void 0 ? void 0 : store.storeName} `,
-                data: store
+                data: store,
             });
         }
         else {
             return res.status(404).json({
-                message: "you are not a user"
+                message: "you are not a user",
             });
         }
     }
     catch (error) {
         return res.status(404).json({
-            message: `cannot create store ${error === null || error === void 0 ? void 0 : error.message}`
+            message: `cannot create store ${error === null || error === void 0 ? void 0 : error.message}`,
         });
     }
 });
@@ -123,24 +123,24 @@ exports.createStore = createStore;
 //        } else {
 //          return res.status(404).json({
 //             message:`Incorrect store Password`
-//         }) 
+//         })
 //        }
 //        } else {
 //         return res.status(404).json({
 //             message:`you didn't create a store`
-//         }) 
+//         })
 //        }
 //         } else {
 //             return res.status(404).json({
 //                 message:`you are not a user`
-//             })   
+//             })
 //         }
 //     } catch (error) {
 //         return res.status(404).json({
 //             message:`can't sign in store :${error}`
 //         })
 //     }
-// } 
+// }
 const getOneUserStore = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userID, storeID } = req.params;
@@ -150,23 +150,23 @@ const getOneUserStore = (req, res) => __awaiter(void 0, void 0, void 0, function
                 path: "stores",
                 options: {
                     sort: {
-                        createdAt: -1
-                    }
-                }
+                        createdAt: -1,
+                    },
+                },
             });
             return res.status(200).json({
-                message: `${user === null || user === void 0 ? void 0 : user.name} ${store === null || store === void 0 ? void 0 : store.storeName} stores gotten `
+                message: `${user === null || user === void 0 ? void 0 : user.name} ${store === null || store === void 0 ? void 0 : store.storeName} stores gotten `,
             });
         }
         else {
             return res.status(404).json({
-                message: "u are not a user"
+                message: "u are not a user",
             });
         }
     }
     catch (error) {
         return res.status(404).json({
-            message: `error ${error}`
+            message: `error ${error}`,
         });
     }
 });
@@ -180,23 +180,23 @@ const getOneStoreUser = (req, res) => __awaiter(void 0, void 0, void 0, function
                 path: "users",
                 options: {
                     sort: {
-                        createdAt: -1
-                    }
-                }
+                        createdAt: -1,
+                    },
+                },
             });
             return res.status(200).json({
-                message: `${store === null || store === void 0 ? void 0 : store.storeName} ${user === null || user === void 0 ? void 0 : user.name} stores gotten `
+                message: `${store === null || store === void 0 ? void 0 : store.storeName} ${user === null || user === void 0 ? void 0 : user.name} stores gotten `,
             });
         }
         else {
             return res.status(404).json({
-                message: "u are not a store"
+                message: "u are not a store",
             });
         }
     }
     catch (error) {
         return res.status(404).json({
-            message: `error ${error}`
+            message: `error ${error}`,
         });
     }
 });
@@ -207,12 +207,12 @@ const searchStoreCategory = (req, res) => __awaiter(void 0, void 0, void 0, func
         const store = yield storeModel_1.default.find({ category });
         return res.status(201).json({
             message: "one category gotten",
-            data: store
+            data: store,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error ${error}`
+            message: `error ${error}`,
         });
     }
 });
@@ -223,12 +223,12 @@ const searchStoreName = (req, res) => __awaiter(void 0, void 0, void 0, function
         const store = yield storeModel_1.default.find({ storeName });
         return res.status(201).json({
             message: "one storeName gotten",
-            data: store
+            data: store,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error ${error}`
+            message: `error ${error}`,
         });
     }
 });
@@ -241,18 +241,18 @@ const adminDeleteStore = (req, res) => __awaiter(void 0, void 0, void 0, functio
             const store = yield storeModel_1.default.findByIdAndDelete(storeID);
             return res.status(200).json({
                 message: `${admin === null || admin === void 0 ? void 0 : admin.name} admin got ${store === null || store === void 0 ? void 0 : store.storeName} deleted`,
-                data: store
+                data: store,
             });
         }
         else {
             return res.status(404).json({
-                message: `you are not an admin`
+                message: `you are not an admin`,
             });
         }
     }
     catch (error) {
         return res.status(404).json({
-            message: `error deleting store ${error}`
+            message: `error deleting store ${error}`,
         });
     }
 });
@@ -271,18 +271,18 @@ const userDeleteStore = (req, res) => __awaiter(void 0, void 0, void 0, function
             // store?.save();
             return res.status(200).json({
                 message: `${user === null || user === void 0 ? void 0 : user.name} user got ${store === null || store === void 0 ? void 0 : store.storeName} deleted`,
-                data: store
+                data: store,
             });
         }
         else {
             return res.status(404).json({
-                message: `you are not an user`
+                message: `you are not an user`,
             });
         }
     }
     catch (error) {
         return res.status(404).json({
-            message: `error deleting store ${error}`
+            message: `error deleting store ${error}`,
         });
     }
 });
@@ -290,16 +290,16 @@ exports.userDeleteStore = userDeleteStore;
 const getAllStores = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const store = yield storeModel_1.default.find().sort({
-            createdAt: -1
+            createdAt: -1,
         });
         return res.status(200).json({
             message: `all stores gotten`,
-            data: store
+            data: store,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error deleting store ${error}`
+            message: `error deleting store ${error}`,
         });
     }
 });
@@ -310,12 +310,12 @@ const getOneStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const store = yield storeModel_1.default.findById(storeID);
         return res.status(200).json({
             message: `one stores gotten`,
-            data: store
+            data: store,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error deleting store ${error}`
+            message: `error deleting store ${error}`,
         });
     }
 });
@@ -326,14 +326,14 @@ const getStoreProducts = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const store = yield storeModel_1.default.findById(storeID).populate({
             path: "products",
             options: {
-                sorts: ({
-                    createdAt: -1
-                })
-            }
+                sorts: {
+                    createdAt: -1,
+                },
+            },
         });
         return res.status(200).json({
             message: "gotten one store products",
-            data: store
+            data: store,
         });
     }
     catch (error) {

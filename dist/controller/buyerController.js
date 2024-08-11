@@ -19,7 +19,7 @@ const bcryptjs_1 = require("bcryptjs");
 const stream_1 = require("../utils/stream");
 const registerBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, email, password, } = req.body;
+        const { name, email, password } = req.body;
         const salt = yield (0, bcryptjs_1.genSalt)(10);
         const harsh = yield (0, bcryptjs_1.hash)(password, salt);
         const buyer = yield buyerModel_1.default.create({
@@ -31,12 +31,12 @@ const registerBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
         return res.status(201).json({
             message: `welcome please sign in ${buyer === null || buyer === void 0 ? void 0 : buyer.name} `,
-            data: buyer
+            data: buyer,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error signing in :${error}`
+            message: `error signing in :${error}`,
         });
     }
 });
@@ -52,30 +52,30 @@ const signInBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 if (comp) {
                     return res.status(201).json({
                         message: `welcome ${buyer.name}`,
-                        data: buyer
+                        data: buyer,
                     });
                 }
                 else {
                     return res.status(404).json({
-                        message: `In correct password`
+                        message: `In correct password`,
                     });
                 }
             }
             else {
                 return res.status(404).json({
-                    message: `you are not verified as a buyer`
+                    message: `you are not verified as a buyer`,
                 });
             }
         }
         else {
             return res.status(404).json({
-                message: `please check your email`
+                message: `please check your email`,
             });
         }
     }
     catch (error) {
         return res.status(404).json({
-            message: `error signing in :${error.message}`
+            message: `error signing in :${error.message}`,
         });
     }
 });
@@ -85,12 +85,13 @@ const getAllBuyers = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const buyer = yield buyerModel_1.default.find();
         return res.status(200).json({
             message: "all buyers gotten",
-            data: buyer
+            data: buyer,
+            allBuyer: buyer === null || buyer === void 0 ? void 0 : buyer.length,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error signing in :${error}`
+            message: `error signing in :${error}`,
         });
     }
 });
@@ -102,17 +103,19 @@ const UpdateOneBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const { name, details, image, imageID } = req.body;
         const buyer = yield buyerModel_1.default.findById(buyerID);
         if (buyer) {
-            const update = yield buyerModel_1.default.findByIdAndUpdate(buyerID, {
+            const update = yield buyerModel_1.default
+                .findByIdAndUpdate(buyerID, {
                 name,
                 details,
                 image: secure_url,
                 imageID: public_id,
-            }).sort({
-                cretedAt: -1
+            })
+                .sort({
+                cretedAt: -1,
             });
             return res.status(201).json({
                 message: " buyer updated",
-                data: update
+                data: update,
             });
         }
         else {
@@ -132,11 +135,11 @@ const getOneBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const { buyerID } = req.params;
         const buyer = yield buyerModel_1.default.findById(buyerID).sort({
-            cretedAt: -1
+            cretedAt: -1,
         });
         return res.status(200).json({
             message: "one buyer gotten",
-            data: buyer
+            data: buyer,
         });
     }
     catch (error) {

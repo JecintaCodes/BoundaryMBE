@@ -22,7 +22,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const { adminID } = req.params;
         const { name, email, password } = req.body;
-        console.log("TEST");
+        // console.log("TEST");
         const admin = yield adminModel_1.default.findById(adminID);
         if (admin) {
             console.log(admin);
@@ -36,7 +36,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 role: role_1.role.user,
                 verify: true,
             });
-            console.log(user);
+            //   console.log(user);
             return res.status(201).json({
                 message: "welcome please sign in",
                 data: user,

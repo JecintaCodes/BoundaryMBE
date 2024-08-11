@@ -34,21 +34,21 @@ const registerAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 role: role_1.role.admin,
                 verify: true,
             });
-            console.log(admin);
+            //   console.log(admin);
             return res.status(201).json({
                 message: "welcome please sign in",
-                data: admin
+                data: admin,
             });
         }
         else {
             return res.status(400).json({
-                message: "your secret code is inCorrect"
+                message: "your secret code is inCorrect",
             });
         }
     }
     catch (error) {
         return res.status(404).json({
-            message: `error signing in :${error === null || error === void 0 ? void 0 : error.message}`
+            message: `error signing in :${error === null || error === void 0 ? void 0 : error.message}`,
         });
     }
 });
@@ -70,25 +70,25 @@ const signInAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 }
                 else {
                     return res.status(404).json({
-                        message: `Incorrect Password `
+                        message: `Incorrect Password `,
                     });
                 }
             }
             else {
                 return res.status(404).json({
-                    message: `you are not verified as an admin, or incorrect secretCode`
+                    message: `you are not verified as an admin, or incorrect secretCode`,
                 });
             }
         }
         else {
             return res.status(404).json({
-                message: `please register as an admin`
+                message: `please register as an admin`,
             });
         }
     }
     catch (error) {
         return res.status(404).json({
-            message: `error signing in :${error}`
+            message: `error signing in :${error}`,
         });
     }
 });
@@ -98,12 +98,13 @@ const getAllAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const admin = yield adminModel_1.default.find();
         return res.status(200).json({
             message: "all admin gotten",
-            data: admin
+            data: admin,
+            allAdmin: admin === null || admin === void 0 ? void 0 : admin.length,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error signing in :${error}`
+            message: `error signing in :${error}`,
         });
     }
 });
@@ -114,12 +115,12 @@ const getOneAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const admin = yield adminModel_1.default.findById(adminID);
         return res.status(200).json({
             message: "one admin gotten",
-            data: admin
+            data: admin,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error getting one in :${error}`
+            message: `error getting one in :${error}`,
         });
     }
 });
@@ -132,16 +133,16 @@ const updateAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             image: secure_url,
             imageID: public_id,
         }, {
-            new: true
+            new: true,
         });
         return res.status(201).json({
             message: `${adminUpdate === null || adminUpdate === void 0 ? void 0 : adminUpdate.name} avatar updated `,
-            data: adminUpdate
+            data: adminUpdate,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: "can't update admin avatar "
+            message: "can't update admin avatar ",
         });
     }
 });
@@ -153,16 +154,16 @@ const updateAdminName = (req, res) => __awaiter(void 0, void 0, void 0, function
         const admin = yield adminModel_1.default.findByIdAndUpdate(adminID, {
             name,
         }, {
-            new: true
+            new: true,
         });
         return res.status(201).json({
             message: `${admin === null || admin === void 0 ? void 0 : admin.name} has updated her name `,
-            data: admin
+            data: admin,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error updating admin name ${error} `
+            message: `error updating admin name ${error} `,
         });
     }
 });
@@ -174,16 +175,16 @@ const updateAdminDetail = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const admin = yield adminModel_1.default.findByIdAndUpdate(adminID, {
             detail,
         }, {
-            new: true
+            new: true,
         });
         return res.status(201).json({
             message: `${admin === null || admin === void 0 ? void 0 : admin.name} has updated her name `,
-            data: admin
+            data: admin,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error updating admin name ${error} `
+            message: `error updating admin name ${error} `,
         });
     }
 });
@@ -201,12 +202,12 @@ const updateAdminInFo = (req, res) => __awaiter(void 0, void 0, void 0, function
         }, { new: true });
         return res.status(201).json({
             message: `${admin === null || admin === void 0 ? void 0 : admin.name} information updated `,
-            data: admin
+            data: admin,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error updating admin: ${error} `
+            message: `error updating admin: ${error} `,
         });
     }
 });
