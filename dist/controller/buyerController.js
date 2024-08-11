@@ -12,10 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOneBuyer = exports.getAllBuyers = exports.signInBuyer = exports.registerBuyer = void 0;
+exports.getOneBuyer = exports.UpdateOneBuyer = exports.getAllBuyers = exports.signInBuyer = exports.registerBuyer = void 0;
 const role_1 = require("../utils/role");
 const buyerModel_1 = __importDefault(require("../model/buyerModel"));
 const bcryptjs_1 = require("bcryptjs");
+const stream_1 = require("../utils/stream");
 const registerBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, email, password, } = req.body;
@@ -51,7 +52,7 @@ const signInBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 if (comp) {
                     return res.status(201).json({
                         message: `welcome ${buyer.name}`,
-                        data: buyer._id
+                        data: buyer
                     });
                 }
                 else {
@@ -94,6 +95,39 @@ const getAllBuyers = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getAllBuyers = getAllBuyers;
+const UpdateOneBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { secure_url, public_id } = yield (0, stream_1.streamUpload)(req);
+        const { buyerID } = req.params;
+        const { name, details, image, imageID } = req.body;
+        const buyer = yield buyerModel_1.default.findById(buyerID);
+        if (buyer) {
+            const update = yield buyerModel_1.default.findByIdAndUpdate(buyerID, {
+                name,
+                details,
+                image: secure_url,
+                imageID: public_id,
+            }).sort({
+                cretedAt: -1
+            });
+            return res.status(201).json({
+                message: " buyer updated",
+                data: update
+            });
+        }
+        else {
+            return res.status(404).json({
+                message: `you are not a buyer `,
+            });
+        }
+    }
+    catch (error) {
+        return res.status(404).json({
+            message: `can't get one buyer ${error} `,
+        });
+    }
+});
+exports.UpdateOneBuyer = UpdateOneBuyer;
 const getOneBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { buyerID } = req.params;

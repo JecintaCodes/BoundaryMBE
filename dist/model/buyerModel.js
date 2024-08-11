@@ -8,11 +8,12 @@ const buyerModel = new mongoose_1.Schema({
     },
     image: {
         type: String,
-        require: true,
     },
     imageID: {
         type: String,
-        require: true,
+    },
+    details: {
+        type: String,
     },
     email: {
         type: String,

@@ -5,7 +5,7 @@ const upload = multer().single("image");
 
 const userRouter = Router();
 
-userRouter.route("/:adminID/register-user").post(registerUser)
+userRouter.route("/:adminID/register-users").post(registerUser)
 userRouter.route("/sign-in-user").post(signInUser)
 userRouter.route("/get-all-user").get(getAllUser)
 userRouter.route("/:userID/get-one-user").get(getOneUser)

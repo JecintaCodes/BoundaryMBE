@@ -8,7 +8,7 @@ const userController_1 = require("../controller/userController");
 const multer_1 = __importDefault(require("multer"));
 const upload = (0, multer_1.default)().single("image");
 const userRouter = (0, express_1.Router)();
-userRouter.route("/:adminID/register-user").post(userController_1.registerUser);
+userRouter.route("/:adminID/register-users").post(userController_1.registerUser);
 userRouter.route("/sign-in-user").post(userController_1.signInUser);
 userRouter.route("/get-all-user").get(userController_1.getAllUser);
 userRouter.route("/:userID/get-one-user").get(userController_1.getOneUser);

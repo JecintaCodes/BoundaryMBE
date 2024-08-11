@@ -65,7 +65,7 @@ const signInAdmin = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                     console.log(admin);
                     return res.status(201).json({
                         message: `welcome ${admin.name}`,
-                        data: admin._id
+                        data: admin,
                     });
                 }
                 else {

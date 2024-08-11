@@ -20,38 +20,72 @@ const userModel_1 = __importDefault(require("../model/userModel"));
 const stream_1 = require("../utils/stream");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("reading:");
         const { adminID } = req.params;
         const { name, email, password } = req.body;
+        console.log("TEST");
         const admin = yield adminModel_1.default.findById(adminID);
         if (admin) {
-            const salt = yield (0, bcryptjs_1.genSalt)(30);
+            console.log(admin);
+            const salt = yield (0, bcryptjs_1.genSalt)(10);
             const harsh = yield (0, bcryptjs_1.hash)(password, salt);
             const user = yield userModel_1.default.create({
                 name,
                 email,
                 password: harsh,
+                // secretCode:secret,
+                role: role_1.role.user,
                 verify: true,
-                role: role_1.role.user
             });
+            console.log(user);
             return res.status(201).json({
-                message: `u have successfully created ${user === null || user === void 0 ? void 0 : user.name}`,
-                data: user
+                message: "welcome please sign in",
+                data: user,
             });
         }
         else {
-            return res.status(404).json({
-                message: `you are not an admin `
+            return res.status(400).json({
+                message: "you are not an admin",
             });
         }
     }
     catch (error) {
         return res.status(404).json({
-            message: `error registering user ${error}`
+            message: `error signing in :${error === null || error === void 0 ? void 0 : error.message}`,
         });
     }
 });
 exports.registerUser = registerUser;
+// export const registerUser = async (req:Request, res:Response)=>{
+//     try {
+//         const {adminID} = req.params;
+//         const {name, email, password} = req.body;
+//         const admin = await adminModel.findById(adminID)
+//         if (admin) {
+//             console.log("reading:",admin)
+//             const salt = await genSalt(30);
+//             const harsh = await hash(password, salt)
+//             const user = await userModel.create({
+//                 name,
+//                 email,
+//                 password:harsh,
+//                 verify:true,
+//                 role:role.user
+//             })
+//             return res.status(201).json({
+//                 message:`u have successfully created ${user?.name}`,
+//                 data:user
+//             })
+//         } else {
+//             return res.status(404).json({
+//                 message:`you are not an admin `
+//             })
+//         }
+//     } catch (error:any) {
+//         return res.status(404).json({
+//             message:`error registering user ${error}`
+//         })
+//     }
+// }
 const signInUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
@@ -62,24 +96,24 @@ const signInUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             if (comp) {
                 return res.status(201).json({
                     message: `welcome ${user.name}`,
-                    data: user._id
+                    data: user,
                 });
             }
             else {
                 return res.status(404).json({
-                    message: `Incorrect Password`
+                    message: `Incorrect Password`,
                 });
             }
         }
         else {
             return res.status(404).json({
-                message: `please register as a user`
+                message: `please register as a user`,
             });
         }
     }
     catch (error) {
         return res.status(404).json({
-            message: `error signing in :${error}`
+            message: `error signing in :${error}`,
         });
     }
 });
@@ -89,12 +123,13 @@ const getAllUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const user = yield userModel_1.default.find();
         return res.status(200).json({
             message: "all user gotten",
-            data: user
+            data: user,
+            totalUse: user.length,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error signing in :${error}`
+            message: `error signing in :${error}`,
         });
     }
 });
@@ -105,12 +140,12 @@ const getOneUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const user = yield userModel_1.default.findById(userID);
         return res.status(200).json({
             message: "one user gotten",
-            data: user
+            data: user,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error getting one in :${error}`
+            message: `error getting one in :${error}`,
         });
     }
 });
@@ -125,12 +160,12 @@ const updateUserImage = (req, res) => __awaiter(void 0, void 0, void 0, function
         }, { new: true });
         return res.status(201).json({
             message: `user avatar updated`,
-            data: user
+            data: user,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error updating admin image ${error} `
+            message: `error updating admin image ${error} `,
         });
     }
 });
@@ -140,16 +175,16 @@ const updateUserName = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const { userID } = req.params;
         const { name } = req.body;
         const user = yield userModel_1.default.findByIdAndUpdate(userID, {
-            name
+            name,
         }, { new: true });
         return res.status(201).json({
             message: " name updated ",
-            data: user
+            data: user,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `user name not updated ${error}`
+            message: `user name not updated ${error}`,
         });
     }
 });
@@ -159,16 +194,16 @@ const updateUserDetail = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const { userID } = req.params;
         const { detail } = req.body;
         const user = yield userModel_1.default.findByIdAndUpdate(userID, {
-            detail
+            detail,
         }, { new: true });
         return res.status(201).json({
             message: "user detail updated ",
-            data: user
+            data: user,
         });
     }
     catch (error) {
         return res.status(404).json({
-            message: `error updating details: ${error}`
+            message: `error updating details: ${error}`,
         });
     }
 });
@@ -186,7 +221,7 @@ const updateUserInfo = (req, res) => __awaiter(void 0, void 0, void 0, function*
         }, { new: true });
         return res.status(201).json({
             message: `user information updated`,
-            data: user
+            data: user,
         });
     }
     catch (error) {

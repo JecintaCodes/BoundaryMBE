@@ -9,6 +9,9 @@ const storeModel = new mongoose_1.Schema({
     storeUrl: {
         type: String,
     },
+    description: {
+        type: String,
+    },
     storeEmail: {
         type: String,
         require: true,
