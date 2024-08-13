@@ -2,55 +2,102 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 import userModel from "../model/userModel";
 import chatModel from "../model/chatModel";
+import buyerModel from "../model/buyerModel";
+import adminModel from "../model/adminModel";
+import { HTTP } from "../error/mainError";
+
+// export const createChat = async (req: Request, res: Response) => {
+//   try {
+//     const { userID, friendID } = req.params;
+
+//     const friend: any = await userModel.findById(friendID);
+//     const user: any = await userModel.findById(userID);
+
+//     const checkUser = user.friends.some((el: string) => el === friendID);
+
+//     const checkFriend = friend.friends.some((el: string) => el === userID);
+
+//     if (checkUser && checkFriend) {
+//       const chat = await chatModel.create({
+//         member: [userID, friendID],
+//       });
+
+//       res.status(HTTP.CREATED).json({
+//         message: "chat Established",
+//         data: chat,
+//       });
+//     } else {
+//       res.status(HTTP.BAD_REQUEST).json({
+//         message: "Error",
+//       });
+//     }
+//   } catch (error) {
+//     res.status(HTTP.BAD_REQUEST).json({
+//       message: "Error",
+//     });
+//   }
+// };
 
 export const createChat = async (req: Request, res: Response) => {
   try {
-    const { userID, friendID } = req.params;
+    const { userID, buyerID, adminID } = req.params;
 
-    const friend: any = await userModel.findById(friendID);
-    const user: any = await userModel.findById(userID);
+    const user = await userModel.findById(userID);
+    const buyer = await buyerModel.findById(buyerID);
+    const admin = await adminModel.findById(adminID);
 
-    const checkUser = user.friends.some((el: string) => el === friendID);
-
-    const checkFriend = friend.friends.some((el: string) => el === userID);
-
-    if (checkUser && checkFriend) {
-      const chat = await chatModel.create({
-        member: [userID, friendID],
+    if (
+      (user && buyer) ||
+      (buyer && user) ||
+      (admin && user) ||
+      (user && admin) ||
+      (admin && buyer) ||
+      (buyer && admin)
+    ) {
+      const newChat = await chatModel.create({
+        member: [
+          userID,
+          buyerID || buyerID,
+          userID || adminID,
+          userID || userID,
+          adminID || buyerID,
+          adminID || adminID,
+          buyerID,
+        ],
       });
 
-      res.status(201).json({
-        message: "chat Established",
-        data: chat,
+      return res.status(HTTP.CREATED).json({
+        message: `chat created`,
+        data: newChat,
       });
     } else {
-      res.status(404).json({
-        message: "Error",
+      return res.status(HTTP.BAD_REQUEST).json({
+        message: `you are not registered on this platform `,
       });
     }
   } catch (error) {
-    res.status(404).json({
-      message: "Error",
+    return res.status(HTTP.BAD_REQUEST).json({
+      message: `can't create chat due to ${error} `,
     });
   }
 };
 
 export const getChat = async (req: Request, res: Response) => {
   try {
-    const { userID, friendID } = req.params;
+    const { userID, adminID, buyerID } = req.params;
 
     const chat = await chatModel.find({
       member: {
-        $all: [userID],
+        $all: [userID || adminID || buyerID],
       },
     });
 
-    res.status(201).json({
-      message: "chat Established",
+    res.status(HTTP.OK).json({
+      message: "reading all chat",
       data: chat,
     });
   } catch (error) {
-    res.status(404).json({
+    res.status(HTTP.BAD_REQUEST).json({
       message: "Error",
     });
   }
@@ -58,20 +105,28 @@ export const getChat = async (req: Request, res: Response) => {
 
 export const getSpecificChat = async (req: Request, res: Response) => {
   try {
-    const { userID, friendID } = req.params;
+    const { userID, adminID, buyerID } = req.params;
 
     const chat = await chatModel.findOne({
       member: {
-        $in: [userID, friendID],
+        $in: [
+          userID,
+          buyerID || buyerID,
+          userID || adminID,
+          userID || userID,
+          adminID || buyerID,
+          adminID || adminID,
+          buyerID,
+        ],
       },
     });
 
-    res.status(201).json({
+    res.status(HTTP.OK).json({
       message: "chat signle Established",
       data: chat,
     });
   } catch (error) {
-    res.status(404).json({
+    res.status(HTTP.BAD_REQUEST).json({
       message: "Error",
     });
   }

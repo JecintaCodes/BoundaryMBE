@@ -4,19 +4,16 @@ const mongoose_1 = require("mongoose");
 const storeModel = new mongoose_1.Schema({
     storeName: {
         type: String,
-        require: true
+        require: true,
     },
     storeUrl: {
-        type: String,
-    },
-    description: {
         type: String,
     },
     storeEmail: {
         type: String,
         require: true,
-        unique: true,
-        lowercase: true
+        //   unique: true,
+        lowercase: true,
     },
     storeImg: {
         type: String,
@@ -37,17 +34,23 @@ const storeModel = new mongoose_1.Schema({
         type: String,
         require: true,
     },
-    users: [{
+    users: [
+        {
             type: mongoose_1.Types.ObjectId,
-            ref: "users"
-        }],
-    products: [{
+            ref: "users",
+        },
+    ],
+    products: [
+        {
             type: mongoose_1.Types.ObjectId,
-            ref: "products"
-        }],
-    admins: [{
+            ref: "products",
+        },
+    ],
+    admins: [
+        {
             type: mongoose_1.Types.ObjectId,
-            ref: "users"
-        }],
+            ref: "users",
+        },
+    ],
 }, { timestamps: true });
 exports.default = (0, mongoose_1.model)("stores", storeModel);

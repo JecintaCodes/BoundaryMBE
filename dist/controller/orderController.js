@@ -15,37 +15,39 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createOrder = void 0;
 const Orders_1 = __importDefault(require("../model/Orders"));
 const buyerModel_1 = __importDefault(require("../model/buyerModel"));
-const storeModel_1 = __importDefault(require("../model/storeModel"));
 const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { buyerID, storeID } = req.params;
-        const { ids } = req.body;
+        const { buyerID, storeID, productID } = req.params;
+        const { email } = req.body;
         const buyer = yield buyerModel_1.default.findById(buyerID);
+        const store = yield buyerModel_1.default.findById(storeID);
+        const product = yield buyerModel_1.default.findById(productID);
         const dates = Date.now();
         const status = "paid";
-        if (buyer) {
-            const store = yield storeModel_1.default.findById(storeID);
-            if (store) {
-                const order = yield Orders_1.default.create({
-                    date: dates,
-                    email: buyer === null || buyer === void 0 ? void 0 : buyer.email,
-                    customersName: buyer === null || buyer === void 0 ? void 0 : buyer.name,
-                    status: status,
-                    ids: buyer === null || buyer === void 0 ? void 0 : buyer._id,
-                });
-                // console.log(c)
-                // console.log("starting here")
-                // console.log("")
-                return res.status(200).json({
-                    message: `your order from ${store === null || store === void 0 ? void 0 : store.storeName} is successfull ${buyer === null || buyer === void 0 ? void 0 : buyer.name}`,
-                    data: order,
-                });
-            }
-            else {
-                return res.status(404).json({
-                    message: `you did not order so email is not here`,
-                });
-            }
+        const status1 = "pending";
+        const status2 = "Fail";
+        if (buyer && store && product) {
+            // const store = await storeModel.findById(storeID);
+            // if (store) {
+            const order = yield Orders_1.default.create({
+                date: dates,
+                email: buyer === null || buyer === void 0 ? void 0 : buyer.email,
+                customersName: buyer === null || buyer === void 0 ? void 0 : buyer.name,
+                status: status,
+                ids: buyer === null || buyer === void 0 ? void 0 : buyer._id,
+            });
+            // console.log(c)
+            // console.log("starting here")
+            // console.log("")
+            return res.status(200).json({
+                message: `your order and it was ${order === null || order === void 0 ? void 0 : order.status} is successfull ${buyer === null || buyer === void 0 ? void 0 : buyer.name}`,
+                data: order,
+            });
+            // } else {
+            //   return res.status(404).json({
+            //     message: `you did not order so email is not here`,
+            //   });
+            // }
         }
         else {
             return res.status(404).json({

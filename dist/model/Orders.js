@@ -22,15 +22,17 @@ const orderModel = new mongoose_1.Schema({
     },
     users: {
         type: mongoose_1.Types.ObjectId,
-        ref: "users"
+        ref: "users",
     },
     admins: {
         type: mongoose_1.Types.ObjectId,
-        ref: "admins"
+        ref: "admins",
     },
-    buyers: {
-        type: mongoose_1.Types.ObjectId,
-        ref: "buyers"
-    },
+    buyers: [
+        {
+            type: mongoose_1.Types.ObjectId,
+            ref: "buyers",
+        },
+    ],
 }, { timestamps: true });
 exports.default = (0, mongoose_1.model)("orders", orderModel);

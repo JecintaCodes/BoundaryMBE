@@ -3,6 +3,9 @@ import adminModel from "../model/adminModel";
 import { role } from "../utils/role";
 import { hash, genSalt, compare } from "bcryptjs";
 import { streamUpload } from "../utils/stream";
+// import userModel from "../model/userModel";
+// import buyerModel from "../model/buyerModel";
+import { HTTP } from "../error/mainError";
 
 export const registerAdmin = async (req: Request, res: Response) => {
   try {
@@ -26,17 +29,17 @@ export const registerAdmin = async (req: Request, res: Response) => {
         verify: true,
       });
       //   console.log(admin);
-      return res.status(201).json({
+      return res.status(HTTP.CREATED).json({
         message: "welcome please sign in",
         data: admin,
       });
     } else {
-      return res.status(400).json({
+      return res.status(HTTP.BAD_REQUEST).json({
         message: "your secret code is inCorrect",
       });
     }
   } catch (error: any) {
-    return res.status(404).json({
+    return res.status(HTTP.BAD_REQUEST).json({
       message: `error signing in :${error?.message}`,
     });
   }
@@ -54,27 +57,27 @@ export const signInAdmin = async (req: Request, res: Response) => {
 
         if (comp) {
           console.log(admin);
-          return res.status(201).json({
+          return res.status(HTTP.CREATED).json({
             message: `welcome ${admin.name}`,
             data: admin,
           });
         } else {
-          return res.status(404).json({
+          return res.status(HTTP.BAD_REQUEST).json({
             message: `Incorrect Password `,
           });
         }
       } else {
-        return res.status(404).json({
+        return res.status(HTTP.BAD_REQUEST).json({
           message: `you are not verified as an admin, or incorrect secretCode`,
         });
       }
     } else {
-      return res.status(404).json({
+      return res.status(HTTP.BAD_REQUEST).json({
         message: `please register as an admin`,
       });
     }
   } catch (error) {
-    return res.status(404).json({
+    return res.status(HTTP.BAD_REQUEST).json({
       message: `error signing in :${error}`,
     });
   }
@@ -83,13 +86,13 @@ export const getAllAdmin = async (req: Request, res: Response) => {
   try {
     const admin = await adminModel.find();
 
-    return res.status(200).json({
+    return res.status(HTTP.OK).json({
       message: "all admin gotten",
       data: admin,
       allAdmin: admin?.length,
     });
   } catch (error) {
-    return res.status(404).json({
+    return res.status(HTTP.BAD_REQUEST).json({
       message: `error signing in :${error}`,
     });
   }
@@ -100,12 +103,12 @@ export const getOneAdmin = async (req: Request, res: Response) => {
 
     const admin = await adminModel.findById(adminID);
 
-    return res.status(200).json({
+    return res.status(HTTP.OK).json({
       message: "one admin gotten",
       data: admin,
     });
   } catch (error) {
-    return res.status(404).json({
+    return res.status(HTTP.BAD_REQUEST).json({
       message: `error getting one in :${error}`,
     });
   }
@@ -125,12 +128,12 @@ export const updateAdmin = async (req: Request, res: Response) => {
         new: true,
       }
     );
-    return res.status(201).json({
+    return res.status(HTTP.CREATED).json({
       message: `${adminUpdate?.name} avatar updated `,
       data: adminUpdate,
     });
   } catch (error) {
-    return res.status(404).json({
+    return res.status(HTTP.OK).json({
       message: "can't update admin avatar ",
     });
   }
@@ -149,12 +152,12 @@ export const updateAdminName = async (req: Request, res: Response) => {
         new: true,
       }
     );
-    return res.status(201).json({
+    return res.status(HTTP.CREATED).json({
       message: `${admin?.name} has updated her name `,
       data: admin,
     });
   } catch (error: any) {
-    return res.status(404).json({
+    return res.status(HTTP.BAD_REQUEST).json({
       message: `error updating admin name ${error} `,
     });
   }
@@ -173,12 +176,12 @@ export const updateAdminDetail = async (req: Request, res: Response) => {
         new: true,
       }
     );
-    return res.status(201).json({
+    return res.status(HTTP.CREATED).json({
       message: `${admin?.name} has updated her name `,
       data: admin,
     });
   } catch (error: any) {
-    return res.status(404).json({
+    return res.status(HTTP.BAD_REQUEST).json({
       message: `error updating admin name ${error} `,
     });
   }
@@ -201,13 +204,47 @@ export const updateAdminInFo = async (req: Request, res: Response) => {
       { new: true }
     );
 
-    return res.status(201).json({
+    return res.status(HTTP.CREATED).json({
       message: `${admin?.name} information updated `,
       data: admin,
     });
   } catch (error) {
-    return res.status(404).json({
+    return res.status(HTTP.BAD_REQUEST).json({
       message: `error updating admin: ${error} `,
     });
   }
 };
+
+// export const signInAllMembers = async (req: Request, res: Response) => {
+//   const { email, password } = req.body;
+
+//   const admin = await adminModel.findOne({ email });
+//   const user = await userModel.findOne({ email });
+//   const buyer = await buyerModel.findOne({ email });
+
+//   if (admin?.verify && user?.verify && buyer?.verify) {
+//     const comp = compare(
+//       password,
+//       admin?.password || password,
+//       user?.password || password
+//     );
+
+//     if (comp) {
+//     } else {
+//       return res.status(404).json({
+//         message: `incorrect password  `,
+//       });
+//     }
+//   } else {
+//     return res.status(404).json({
+//       message: `you are not signed in  `,
+//     });
+//   }
+
+//   try {
+//   } catch (error) {
+//     return res.status(404).json({
+//       message: `can't sign in this member of boundary market `,
+//     });
+//   }
+// };

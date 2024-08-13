@@ -11,14 +11,13 @@ export const createStore = async (req: Request, res: Response) => {
     const { userID } = req.params;
     const {
       storeDetail,
-      storeImgID,
-      storeImg,
+      // storeImgID,
+      // storeImg,
       category,
       storeUrl,
       storeSocialMediaAcc,
       storeName,
       storeEmail,
-      description,
     } = req.body;
     const { secure_url, public_id }: any = await streamUpload(req);
 
@@ -35,9 +34,8 @@ export const createStore = async (req: Request, res: Response) => {
         storeUrl,
         verify: true,
         category,
-        description,
       });
-      user?.stores?.push(store?._id);
+      user?.stores?.push(store);
       user.save();
       return res.status(201).json({
         message: `${user?.name} created ${store?.storeName} `,

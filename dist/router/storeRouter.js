@@ -16,7 +16,11 @@ storeRouter.route("/:userID/:storeID/get-one-user-store").get(storeController_1.
 storeRouter.route("/:storeID/:userID/get-one-store-user").get(storeController_1.getOneStoreUser);
 storeRouter.route("/search-store-category").get(storeController_1.searchStoreCategory);
 storeRouter.route("/search-store-name").get(storeController_1.searchStoreName);
-storeRouter.route("/:adminID/:storeID/admin-delete-store").delete(storeController_1.adminDeleteStore);
-storeRouter.route("/:userID/:storeID/user-delete-store").delete(storeController_1.userDeleteStore);
+storeRouter
+    .route("/:adminID/:storeID/admin-delete-store")
+    .delete(storeController_1.adminDeleteStore);
+storeRouter
+    .route("/:userID/:storeID/user-delete-store")
+    .delete(storeController_1.userDeleteStore);
 storeRouter.route(":storeID/store-products").get(storeController_1.getStoreProducts);
 exports.default = storeRouter;

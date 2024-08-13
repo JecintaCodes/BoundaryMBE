@@ -28,13 +28,13 @@ const mainApp = (app) => {
     app.get("/", (req, res) => {
         try {
             return res.status(200).json({
-                message: "Api live .............."
+                message: "Api live ..............",
             });
         }
         catch (error) {
             return res.status(404).json({
                 message: "server error",
-                data: error
+                data: error,
             });
         }
     });
