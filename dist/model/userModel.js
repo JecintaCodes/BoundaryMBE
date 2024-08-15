@@ -37,15 +37,17 @@ const userModel = new mongoose_1.Schema({
     // },
     admins: {
         type: mongoose_1.Types.ObjectId,
-        ref: "admins"
+        ref: "admins",
     },
-    stores: {
-        type: mongoose_1.Types.ObjectId,
-        ref: "stores"
-    },
+    stores: [
+        {
+            type: mongoose_1.Types.ObjectId,
+            ref: "stores",
+        },
+    ],
     orders: {
         type: mongoose_1.Types.ObjectId,
-        ref: "orders"
+        ref: "orders",
     },
 }, { timestamps: true });
 exports.default = (0, mongoose_1.model)("users", userModel);

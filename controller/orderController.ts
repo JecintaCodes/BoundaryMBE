@@ -1,50 +1,40 @@
 import { Request, Response } from "express";
-import orderModel from "../model/Orders";
 import buyerModel from "../model/buyerModel";
-import storeModel from "../model/storeModel";
 import { HTTP } from "../error/mainError";
+import userModel from "../model/userModel";
+import productModel from "../model/productModel";
+import { Types } from "mongoose";
 
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const { buyerID, storeID, productID } = req.params;
-    const { email } = req.body;
+    const { buyerID, productID } = req.params;
 
     const buyer = await buyerModel.findById(buyerID);
-    const store = await buyerModel.findById(storeID);
-    const product = await buyerModel.findById(productID);
 
-    const dates = Date.now();
-    const status = "paid";
-    const status1 = "pending";
-    const status2 = "Fail";
+    if (buyer) {
+      const product = await productModel.findById(productID);
+      if (product) {
+        const userProduct = await userModel.findById(product?.userID);
 
-    if (buyer && store && product) {
-      // const store = await storeModel.findById(storeID);
+        userProduct?.orders?.push(new Types.ObjectId(product._id));
+        userProduct?.histroys?.push(new Types.ObjectId(product._id));
+        userProduct?.save();
 
-      // if (store) {
-      const order = await orderModel.create({
-        date: dates,
-        email: buyer?.email,
-        customersName: buyer?.name,
-        status: status,
-        ids: buyer?._id,
-      });
+        buyer?.orders.push(new Types.ObjectId(product?._id));
+        buyer?.histroys.push(new Types.ObjectId(product?._id));
+        buyer?.save();
 
-      // console.log(c)
-      // console.log("starting here")
-      // console.log("")
-      return res.status(HTTP.CREATED).json({
-        message: `your order and it was ${order?.status} is successfull ${buyer?.name}`,
-        data: order,
-      });
-      // } else {
-      //   return res.status(404).json({
-      //     message: `you did not order so email is not here`,
-      //   });
-      // }
+        return res.status(HTTP.OK).json({
+          message: `${buyer?.name} created an order from ${userProduct?.name}`,
+        });
+      } else {
+        return res.status(HTTP.BAD_REQUEST).json({
+          message: `product does not exist`,
+        });
+      }
     } else {
       return res.status(HTTP.BAD_REQUEST).json({
-        message: `you did not click on any store   `,
+        message: `you are not signed in`,
       });
     }
   } catch (error) {

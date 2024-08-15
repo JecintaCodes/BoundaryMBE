@@ -38,50 +38,66 @@ import { HTTP } from "../error/mainError";
 //   }
 // };
 
+// export const createChat = async (req: Request, res: Response) => {
+//   try {
+//     const { userID, buyerID, adminID } = req.params;
+
+//     const user = await userModel.findById(userID);
+//     const buyer = await buyerModel.findById(buyerID);
+//     const admin = await adminModel.findById(adminID);
+
+//     if (
+//       (user && buyer) ||
+//       (buyer && user) ||
+//       (admin && user) ||
+//       (user && admin) ||
+//       (admin && buyer) ||
+//       (buyer && admin)
+//     ) {
+//       const newChat = await chatModel.create({
+//         member: [
+//           userID,
+//           buyerID || buyerID,
+//           userID || adminID,
+//           userID || userID,
+//           adminID || buyerID,
+//           adminID || adminID,
+//           buyerID,
+//         ],
+//       });
+
+//       return res.status(HTTP.CREATED).json({
+//         message: `chat created`,
+//         data: newChat,
+//       });
+//     } else {
+//       return res.status(HTTP.BAD_REQUEST).json({
+//         message: `you are not registered on this platform `,
+//       });
+//     }
+//   } catch (error) {
+//     return res.status(HTTP.BAD_REQUEST).json({
+//       message: `can't create chat due to ${error} `,
+//     });
+//   }
+// };
+
 export const createChat = async (req: Request, res: Response) => {
   try {
-    const { userID, buyerID, adminID } = req.params;
+    const newChat = await chatModel.create({
+      member: [],
+    });
 
-    const user = await userModel.findById(userID);
-    const buyer = await buyerModel.findById(buyerID);
-    const admin = await adminModel.findById(adminID);
-
-    if (
-      (user && buyer) ||
-      (buyer && user) ||
-      (admin && user) ||
-      (user && admin) ||
-      (admin && buyer) ||
-      (buyer && admin)
-    ) {
-      const newChat = await chatModel.create({
-        member: [
-          userID,
-          buyerID || buyerID,
-          userID || adminID,
-          userID || userID,
-          adminID || buyerID,
-          adminID || adminID,
-          buyerID,
-        ],
-      });
-
-      return res.status(HTTP.CREATED).json({
-        message: `chat created`,
-        data: newChat,
-      });
-    } else {
-      return res.status(HTTP.BAD_REQUEST).json({
-        message: `you are not registered on this platform `,
-      });
-    }
+    return res.status(201).json({
+      message: `chat created`,
+      data: newChat,
+    });
   } catch (error) {
-    return res.status(HTTP.BAD_REQUEST).json({
-      message: `can't create chat due to ${error} `,
+    return res.status(404).json({
+      message: `error creating chat`,
     });
   }
 };
-
 export const getChat = async (req: Request, res: Response) => {
   try {
     const { userID, adminID, buyerID } = req.params;

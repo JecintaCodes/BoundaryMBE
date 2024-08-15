@@ -18,6 +18,7 @@ const role_1 = require("../utils/role");
 const bcryptjs_1 = require("bcryptjs");
 const userModel_1 = __importDefault(require("../model/userModel"));
 const stream_1 = require("../utils/stream");
+const mainError_1 = require("../error/mainError");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { adminID } = req.params;
@@ -37,19 +38,19 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 verify: true,
             });
             //   console.log(user);
-            return res.status(201).json({
+            return res.status(mainError_1.HTTP.CREATED).json({
                 message: "welcome please sign in",
                 data: user,
             });
         }
         else {
-            return res.status(400).json({
+            return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                 message: "you are not an admin",
             });
         }
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `error signing in :${error === null || error === void 0 ? void 0 : error.message}`,
         });
     }
@@ -71,7 +72,7 @@ exports.registerUser = registerUser;
 //                 verify:true,
 //                 role:role.user
 //             })
-//             return res.status(201).json({
+//             return res.status(HTTP.CREATED).json({
 //                 message:`u have successfully created ${user?.name}`,
 //                 data:user
 //             })
@@ -94,25 +95,25 @@ const signInUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             // console.log(user)
             const comp = yield (0, bcryptjs_1.compare)(password, user === null || user === void 0 ? void 0 : user.password);
             if (comp) {
-                return res.status(201).json({
+                return res.status(mainError_1.HTTP.CREATED).json({
                     message: `welcome ${user.name}`,
                     data: user,
                 });
             }
             else {
-                return res.status(404).json({
+                return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                     message: `Incorrect Password`,
                 });
             }
         }
         else {
-            return res.status(404).json({
+            return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                 message: `please register as a user`,
             });
         }
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `error signing in :${error}`,
         });
     }
@@ -121,14 +122,14 @@ exports.signInUser = signInUser;
 const getAllUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield userModel_1.default.find();
-        return res.status(200).json({
+        return res.status(mainError_1.HTTP.OK).json({
             message: "all user gotten",
             data: user,
             totalUse: user.length,
         });
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `error signing in :${error}`,
         });
     }
@@ -138,13 +139,13 @@ const getOneUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const { userID } = req.params;
         const user = yield userModel_1.default.findById(userID);
-        return res.status(200).json({
+        return res.status(mainError_1.HTTP.OK).json({
             message: "one user gotten",
             data: user,
         });
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `error getting one in :${error}`,
         });
     }
@@ -158,13 +159,13 @@ const updateUserImage = (req, res) => __awaiter(void 0, void 0, void 0, function
             image: secure_url,
             imageID: public_id,
         }, { new: true });
-        return res.status(201).json({
+        return res.status(mainError_1.HTTP.CREATED).json({
             message: `user avatar updated`,
             data: user,
         });
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `error updating admin image ${error} `,
         });
     }
@@ -177,13 +178,13 @@ const updateUserName = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const user = yield userModel_1.default.findByIdAndUpdate(userID, {
             name,
         }, { new: true });
-        return res.status(201).json({
+        return res.status(mainError_1.HTTP.CREATED).json({
             message: " name updated ",
             data: user,
         });
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `user name not updated ${error}`,
         });
     }
@@ -196,13 +197,13 @@ const updateUserDetail = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const user = yield userModel_1.default.findByIdAndUpdate(userID, {
             detail,
         }, { new: true });
-        return res.status(201).json({
+        return res.status(mainError_1.HTTP.CREATED).json({
             message: "user detail updated ",
             data: user,
         });
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `error updating details: ${error}`,
         });
     }
@@ -219,13 +220,13 @@ const updateUserInfo = (req, res) => __awaiter(void 0, void 0, void 0, function*
             image: secure_url,
             imageID: public_id,
         }, { new: true });
-        return res.status(201).json({
+        return res.status(mainError_1.HTTP.CREATED).json({
             message: `user information updated`,
             data: user,
         });
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `error updating user info ${error} `,
         });
     }

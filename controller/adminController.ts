@@ -46,7 +46,7 @@ export const registerAdmin = async (req: Request, res: Response) => {
 };
 export const signInAdmin = async (req: Request, res: Response) => {
   try {
-    const { email, password, secretCode } = req.body;
+    const { email, password } = req.body;
 
     const admin = await adminModel.findOne({ email });
     if (admin) {

@@ -30,7 +30,6 @@ const storeModel = new Schema(
     storeEmail: {
       type: String,
       require: true,
-      unique: true,
       lowercase: true,
     },
     storeImg: {

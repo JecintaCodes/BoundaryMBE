@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getChatMessage = exports.createChatMesssage = void 0;
 const chatMessageModel_1 = __importDefault(require("../model/chatMessageModel"));
+const mainError_1 = require("../error/mainError");
 const createChatMesssage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userID, chatID } = req.params;
@@ -23,13 +24,13 @@ const createChatMesssage = (req, res) => __awaiter(void 0, void 0, void 0, funct
             chatID,
             message,
         });
-        res.status(201).json({
+        res.status(mainError_1.HTTP.CREATED).json({
             message: "Established chat message",
             data: chatMessage,
         });
     }
     catch (error) {
-        res.status(404).json({
+        res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: "Error",
         });
     }
@@ -39,13 +40,13 @@ const getChatMessage = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const { chatID } = req.params;
         const chatMessage = yield chatMessageModel_1.default.find({ chatID });
-        res.status(201).json({
+        res.status(mainError_1.HTTP.OK).json({
             message: "Get chat message",
             data: chatMessage,
         });
     }
     catch (error) {
-        res.status(404).json({
+        res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: "Error",
         });
     }

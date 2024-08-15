@@ -19,9 +19,7 @@ const upload = multer().single("image");
 const productRouter = Router();
 
 productRouter.route("make-payment").post(ProductPayment);
-productRouter
-  .route("/:userID/:storeID/register-products")
-  .post(upload, createProduct);
+productRouter.route("/:userID/register-products").post(upload, createProduct);
 productRouter.route("/:productID/get-one-product").get(readOneProduct);
 productRouter.route("/get-all-product").get(readProduct);
 productRouter.route("/:productID/update-product").patch(upload, updateProducts);

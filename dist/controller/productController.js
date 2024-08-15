@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProductToggle = exports.payment = exports.updateProductStock = exports.adminDeleteProduct = exports.searchProductName = exports.deleteProduct = exports.updateProductImg = exports.updateProductQuantity = exports.updateProductAmount = exports.updateProductTotal = exports.updateProductName = exports.updateProducts = exports.readOneProduct = exports.readProduct = exports.createProduct = void 0;
+exports.updateProductToggle = exports.ProductPayment = exports.updateProductStock = exports.adminDeleteProduct = exports.searchProductName = exports.deleteProduct = exports.updateProductImg = exports.updateProductQuantity = exports.updateProductAmount = exports.updateProductTotal = exports.updateProductName = exports.updateProducts = exports.readOneProduct = exports.readProduct = exports.createProduct = void 0;
 const userModel_1 = __importDefault(require("../model/userModel"));
 const storeModel_1 = __importDefault(require("../model/storeModel"));
 const productModel_1 = __importDefault(require("../model/productModel"));
@@ -20,47 +20,37 @@ const stream_1 = require("../utils/stream");
 const adminModel_1 = __importDefault(require("../model/adminModel"));
 const https_1 = __importDefault(require("https"));
 const mainError_1 = require("../error/mainError");
+const mongoose_1 = require("mongoose");
 const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        const { userID, storeID } = req.params;
+        const { userID } = req.params;
         const { title, description, QTYinStock, amount } = req.body;
         const { secure_url } = yield (0, stream_1.streamUpload)(req);
         const user = yield userModel_1.default.findById(userID);
         if (user) {
-            const store = yield storeModel_1.default.findById(storeID);
-            if (store) {
-                const product = yield productModel_1.default.create({
-                    title,
-                    img: secure_url,
-                    //   store,
-                    QTYinStock,
-                    amount,
-                    storeID: store === null || store === void 0 ? void 0 : store._id,
-                    description,
-                });
-                (_a = store === null || store === void 0 ? void 0 : store.products) === null || _a === void 0 ? void 0 : _a.push(product);
-                store === null || store === void 0 ? void 0 : store.save();
-                // product?.stores?.push(store?.storeName!)
-                return res.status(201).json({
-                    message: `${store.storeName} has succesfully created ${product.title} `,
-                    data: product,
-                });
-            }
-            else {
-                return res.status(400).json({
-                    message: `go and create a store `,
-                });
-            }
+            const product = yield productModel_1.default.create({
+                title,
+                img: secure_url,
+                QTYinStock,
+                amount,
+                description,
+            });
+            (_a = user === null || user === void 0 ? void 0 : user.stores) === null || _a === void 0 ? void 0 : _a.push(new mongoose_1.Types.ObjectId(product._id));
+            user === null || user === void 0 ? void 0 : user.save();
+            return res.status(mainError_1.HTTP.CREATED).json({
+                message: `has succesfully created ${product.title} `,
+                data: product,
+            });
         }
         else {
-            return res.status(400).json({
-                message: `you are not a user go back and register as a user `,
+            return res.status(mainError_1.HTTP.BAD_REQUEST).json({
+                message: `you are not a user`,
             });
         }
     }
     catch (error) {
-        return res.status(400).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `Cannot create store: ${error}`,
         });
     }
@@ -69,13 +59,13 @@ exports.createProduct = createProduct;
 const readProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const product = yield productModel_1.default.find();
-        return res.status(200).json({
+        return res.status(mainError_1.HTTP.OK).json({
             message: "reading all the products",
             data: product,
         });
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `can't read data ${error} `,
         });
     }
@@ -85,12 +75,12 @@ const readOneProduct = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const { productID } = req.params;
         const product = yield productModel_1.default.findById(productID);
-        return res.status(200).json({
+        return res.status(mainError_1.HTTP.OK).json({
             message: "gotten one product",
         });
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `cannot read one product ${error}`,
         });
     }
@@ -103,14 +93,14 @@ const updateProducts = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const product = yield productModel_1.default.findById(productID);
         if (product) {
             let viewProduct = yield productModel_1.default.findByIdAndUpdate(productID, { QTYinStock: product.QTYinStock - QTYpurchased }, { new: true });
-            return res.status(201).json({
+            return res.status(mainError_1.HTTP.CREATED).json({
                 message: "One product gotten",
                 data: viewProduct,
             });
         }
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `error getting One product ${error}`,
         });
     }
@@ -127,13 +117,13 @@ exports.updateProducts = updateProducts;
 //         { toggle },
 //         { new: true }
 //       );
-//       return res.status(201).json({
+//       return res.status(HTTP.CREATED).json({
 //         message: "One product gotten",
 //         data: toggleProduct,
 //       });
 //     }
 //   } catch (error) {
-//     return res.status(404).json({
+//     return res.status(HTTP.BAD_REQUEST).json({
 //       message: `error getting One product ${error}`,
 //     });
 //   }
@@ -147,19 +137,19 @@ const updateProductName = (req, res) => __awaiter(void 0, void 0, void 0, functi
             const updateProduct = yield productModel_1.default.findByIdAndUpdate(productID, {
                 title,
             }, { new: true });
-            return res.status(201).json({
+            return res.status(mainError_1.HTTP.CREATED).json({
                 message: "product updated",
                 data: updateProduct,
             });
         }
         else {
-            return res.status(404).json({
+            return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                 message: `this is not a product `,
             });
         }
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `can't update product ${error}`,
         });
     }
@@ -174,19 +164,19 @@ const updateProductTotal = (req, res) => __awaiter(void 0, void 0, void 0, funct
             const updateProduct = yield productModel_1.default.findByIdAndUpdate(productID, {
                 total,
             }, { new: true });
-            return res.status(201).json({
+            return res.status(mainError_1.HTTP.CREATED).json({
                 message: "product updated",
                 data: updateProduct,
             });
         }
         else {
-            return res.status(404).json({
+            return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                 message: `this is not a product `,
             });
         }
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `can't update product ${error}`,
         });
     }
@@ -201,19 +191,19 @@ const updateProductAmount = (req, res) => __awaiter(void 0, void 0, void 0, func
             const updateProduct = yield productModel_1.default.findByIdAndUpdate(productID, {
                 amount,
             }, { new: true });
-            return res.status(201).json({
+            return res.status(mainError_1.HTTP.CREATED).json({
                 message: "product updated",
                 data: updateProduct,
             });
         }
         else {
-            return res.status(404).json({
+            return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                 message: `this is not a product `,
             });
         }
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `can't update product ${error}`,
         });
     }
@@ -228,19 +218,19 @@ const updateProductQuantity = (req, res) => __awaiter(void 0, void 0, void 0, fu
             const updateProduct = yield productModel_1.default.findByIdAndUpdate(productID, {
                 QTYinStock,
             }, { new: true });
-            return res.status(201).json({
+            return res.status(mainError_1.HTTP.CREATED).json({
                 message: "product updated",
                 data: updateProduct,
             });
         }
         else {
-            return res.status(404).json({
+            return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                 message: `this is not a product `,
             });
         }
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `can't update product ${error}`,
         });
     }
@@ -256,19 +246,19 @@ const updateProductImg = (req, res) => __awaiter(void 0, void 0, void 0, functio
             const updateProduct = yield productModel_1.default.findByIdAndUpdate(productID, {
                 img: secure_url,
             }, { new: true });
-            return res.status(201).json({
+            return res.status(mainError_1.HTTP.CREATED).json({
                 message: "product updated",
                 data: updateProduct,
             });
         }
         else {
-            return res.status(404).json({
+            return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                 message: `this is not a product `,
             });
         }
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `can't update product ${error}`,
         });
     }
@@ -288,31 +278,31 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     // store?.save();
                     // store?.products?.pull(product._id);
                     // store.save();
-                    return res.status(200).json({
+                    return res.status(mainError_1.HTTP.OK).json({
                         message: "product deleted",
                         data: deleteProduct,
                     });
                 }
                 else {
-                    return res.status(404).json({
+                    return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                         message: `this product does not belong to you `,
                     });
                 }
             }
             else {
-                return res.status(404).json({
+                return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                     message: `you don't have access to this store `,
                 });
             }
         }
         else {
-            return res.status(404).json({
+            return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                 message: `you are not a user `,
             });
         }
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `error deleting product ${error}`,
         });
     }
@@ -322,13 +312,13 @@ const searchProductName = (req, res) => __awaiter(void 0, void 0, void 0, functi
     try {
         const { name } = req.params;
         const product = yield productModel_1.default.find({ name });
-        return res.status(200).json({
+        return res.status(mainError_1.HTTP.OK).json({
             message: `product name found`,
             data: product,
         });
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `error searching one product name ${error} `,
         });
     }
@@ -340,19 +330,19 @@ const adminDeleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, funct
         const admin = yield adminModel_1.default.findById(adminID);
         if (admin) {
             const product = yield productModel_1.default.findByIdAndDelete(productID);
-            return res.status(200).json({
+            return res.status(mainError_1.HTTP.OK).json({
                 message: `${admin === null || admin === void 0 ? void 0 : admin.name} admin got ${product === null || product === void 0 ? void 0 : product.title} deleted`,
                 data: product,
             });
         }
         else {
-            return res.status(404).json({
+            return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                 message: `you are not an admin`,
             });
         }
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `error deleting store ${error}`,
         });
     }
@@ -365,25 +355,25 @@ const updateProductStock = (req, res) => __awaiter(void 0, void 0, void 0, funct
         const product = yield productModel_1.default.findById(productID);
         if (product) {
             let viewProduct = yield productModel_1.default.findByIdAndUpdate(productID, { QTYinStock: product.QTYinStock - QTYPurchased }, { new: true });
-            return res.status(200).json({
+            return res.status(mainError_1.HTTP.OK).json({
                 message: "update one product",
                 data: viewProduct,
             });
         }
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: "Error",
             data: error.message,
         });
     }
 });
 exports.updateProductStock = updateProductStock;
-const payment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const ProductPayment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { amount } = req.body;
         const params = JSON.stringify({
-            email: "customer@email.com",
+            email: "buyer@email.com",
             amount: amount * 100,
         });
         const options = {
@@ -404,7 +394,7 @@ const payment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
             resp.on("end", () => {
                 console.log(JSON.parse(data));
-                res.status(mainError_1.HTTP.OK).json({
+                res.status(mainError_1.HTTP.CREATED).json({
                     message: "Payment successful",
                     data: JSON.parse(data),
                 });
@@ -422,7 +412,7 @@ const payment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
 });
-exports.payment = payment;
+exports.ProductPayment = ProductPayment;
 const updateProductToggle = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { productID } = req.params;
@@ -430,17 +420,60 @@ const updateProductToggle = (req, res) => __awaiter(void 0, void 0, void 0, func
         const product = yield productModel_1.default.findById(productID);
         if (product) {
             let toggledView = yield productModel_1.default.findByIdAndUpdate(productID, { toggle }, { new: true });
-            return res.status(200).json({
+            return res.status(mainError_1.HTTP.OK).json({
                 message: "update toggle product",
                 data: toggledView,
             });
         }
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: "Error",
             data: error.message,
         });
     }
 });
 exports.updateProductToggle = updateProductToggle;
+// export const payment = async (req: Request, res: Response) => {
+//   try {
+//     const { amount } = req.body;
+//     const params = JSON.stringify({
+//       email: "customer@email.com",
+//       amount: amount * 100,
+//     });
+//     const options = {
+//       hostname: "api.paystack.co",
+//       port: 443,
+//       path: "/transaction/initialize",
+//       method: "POST",
+//       headers: {
+//         Authorization:
+//           "Bearer sk_test_ec1b0ccabcb547fe0efbd991f3b64b485903c88e",
+//         "Content-Type": "application/json",
+//       },
+//     };
+//     const ask = https
+//       .request(options, (resp) => {
+//         let data = "";
+//         resp.on("data", (chunk) => {
+//           data += chunk;
+//         });
+//         resp.on("end", () => {
+//           console.log(JSON.parse(data));
+//           res.status(HTTP.OK).json({
+//             message: "Payment successful",
+//             data: JSON.parse(data),
+//           });
+//         });
+//       })
+//       .on("error", (error) => {
+//         console.error(error);
+//       });
+//     ask.write(params);
+//     ask.end();
+//   } catch (error) {
+//     return res.status(HTTP.BAD_REQUEST).json({
+//       message: "Error making Payment",
+//     });
+//   }
+// };

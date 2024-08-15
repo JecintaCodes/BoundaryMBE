@@ -8,9 +8,8 @@ const productController_1 = require("../controller/productController");
 const multer_1 = __importDefault(require("multer"));
 const upload = (0, multer_1.default)().single("image");
 const productRouter = (0, express_1.Router)();
-productRouter
-    .route("/:userID/:storeID/register-products")
-    .post(upload, productController_1.createProduct);
+productRouter.route("make-payment").post(productController_1.ProductPayment);
+productRouter.route("/:userID/register-products").post(upload, productController_1.createProduct);
 productRouter.route("/:productID/get-one-product").get(productController_1.readOneProduct);
 productRouter.route("/get-all-product").get(productController_1.readProduct);
 productRouter.route("/:productID/update-product").patch(upload, productController_1.updateProducts);

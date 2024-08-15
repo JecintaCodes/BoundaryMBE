@@ -1,74 +1,78 @@
-import { model, Document,Schema,Types } from "mongoose"
+import { model, Document, Schema, Types } from "mongoose";
 
-interface iUser{
-    name: string;
-    email: string;
-    role?:string;
-    password:string;
-    detail?: string;
-    image?: string;
-    imageID?: string;
-    adminID:string;
-    // secretCode:string;
-    verify:boolean;
-    admins:{}[];
-    stores:{}[];
-    orders:{}[];
-    
+interface iUser {
+  name: string;
+  email: string;
+  role?: string;
+  password: string;
+  detail?: string;
+  image: string;
+  imageID?: string;
+  adminID: string;
+  verify: boolean;
+  admins: {};
+  stores: {}[];
+  orders: {}[];
+  histroys: {}[];
 }
 
-interface iUserData extends iUser, Document{}
+interface iUserData extends iUser, Document {}
 
-const userModel = new Schema({
-
-    name:{
-        type:String,
-        require:true,
+const userModel = new Schema(
+  {
+    name: {
+      type: String,
+      require: true,
     },
-    email:{
-        type:String,
-        require:true,
-        unique:true,
-        lowerCase:true,
-
+    email: {
+      type: String,
+      require: true,
+      unique: true,
+      lowerCase: true,
     },
-    password:{
-        type:String,
-        require:true,
+    password: {
+      type: String,
+      require: true,
     },
-    role:{
-        type:String,
+    role: {
+      type: String,
     },
-    detail:{
-        type:String,
+    detail: {
+      type: String,
     },
-    image:{
-        type:String,
+    image: {
+      type: String,
     },
-    imageID:{
-        type:String,
+    imageID: {
+      type: String,
     },
-    verify:{
-        type:Boolean,
-        
+    verify: {
+      type: Boolean,
     },
-    // secretCode:{
-    //     type:String,
-    //     require:true,
-    // },
-    admins:{
+    admins: {
+      type: Types.ObjectId,
+      ref: "admins",
+    },
+    stores: [
+      {
         type: Types.ObjectId,
-        ref:"admins"
-    },
-    stores:{
+        ref: "stores",
+      },
+    ],
+    orders: [
+      {
         type: Types.ObjectId,
-        ref:"stores"
-    },
-    orders:{
+        ref: "orders",
+      },
+    ],
+    histroys: [
+      {
         type: Types.ObjectId,
-        ref:"orders"
-    },
+        ref: "histroys",
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
-}, {timestamps:true})
-
-export default model<iUserData>("users",userModel)
+export default model<iUserData>("users", userModel);

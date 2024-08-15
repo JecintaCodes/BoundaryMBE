@@ -8,9 +8,11 @@ interface iProduct {
   QTYinStock: number;
   storeID: string;
   toggle: boolean;
+  userID: string;
   stores: [];
   users: {}[];
   admins: {};
+  orders: {}[];
 }
 
 interface iProductData extends iProduct, Document {}
@@ -20,6 +22,9 @@ const productModel = new Schema(
     title: {
       type: String,
       require: true,
+    },
+    userID: {
+      type: String,
     },
     img: {
       type: String,
@@ -51,6 +56,12 @@ const productModel = new Schema(
       {
         type: Types.ObjectId,
         ref: "users",
+      },
+    ],
+    orders: [
+      {
+        type: Types.ObjectId,
+        ref: "orders",
       },
     ],
     admins: {

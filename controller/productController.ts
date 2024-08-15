@@ -6,43 +6,34 @@ import { streamUpload } from "../utils/stream";
 import adminModel from "../model/adminModel";
 import https from "https";
 import { HTTP } from "../error/mainError";
+import { Types } from "mongoose";
 
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const { userID, storeID } = req.params;
+    const { userID } = req.params;
     const { title, description, QTYinStock, amount } = req.body;
     const { secure_url }: any = await streamUpload(req);
 
-    const user = await userModel.findById(userID);
+    const user: any = await userModel.findById(userID);
 
     if (user) {
-      const store = await storeModel.findById(storeID);
-
-      if (store) {
-        const product = await productModel.create({
-          title,
-          img: secure_url,
-          //   store,
-          QTYinStock,
-          amount,
-          storeID: store?._id,
-          description,
-        });
-        store?.products?.push(product);
-        store?.save();
-        // product?.stores?.push(store?.storeName!)
-        return res.status(HTTP.CREATED).json({
-          message: `${store.storeName} has succesfully created ${product.title} `,
-          data: product,
-        });
-      } else {
-        return res.status(HTTP.BAD_REQUEST).json({
-          message: `go and create a store `,
-        });
-      }
+      const product = await productModel.create({
+        userID: user?._id,
+        title,
+        img: secure_url,
+        QTYinStock,
+        amount,
+        description,
+      });
+      user?.stores?.push(new Types.ObjectId(product._id));
+      user?.save();
+      return res.status(HTTP.CREATED).json({
+        message: `has succesfully created ${product.title} `,
+        data: product,
+      });
     } else {
       return res.status(HTTP.BAD_REQUEST).json({
-        message: `you are not a user go back and register as a user `,
+        message: `you are not a user`,
       });
     }
   } catch (error) {

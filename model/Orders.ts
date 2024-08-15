@@ -6,6 +6,7 @@ export interface Iorder {
   email: string;
   customersName: string;
   status: string;
+  orders: {}[];
   users: {};
   admin: {};
   buyers: [];
@@ -45,6 +46,12 @@ const orderModel = new Schema(
       {
         type: Types.ObjectId,
         ref: "buyers",
+      },
+    ],
+    orders: [
+      {
+        type: Types.ObjectId,
+        ref: "orders",
       },
     ],
   },

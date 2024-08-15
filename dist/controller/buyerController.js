@@ -17,6 +17,7 @@ const role_1 = require("../utils/role");
 const buyerModel_1 = __importDefault(require("../model/buyerModel"));
 const bcryptjs_1 = require("bcryptjs");
 const stream_1 = require("../utils/stream");
+const mainError_1 = require("../error/mainError");
 const registerBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, email, password } = req.body;
@@ -29,13 +30,13 @@ const registerBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             role: role_1.role.buyer,
             verify: true,
         });
-        return res.status(201).json({
+        return res.status(mainError_1.HTTP.CREATED).json({
             message: `welcome please sign in ${buyer === null || buyer === void 0 ? void 0 : buyer.name} `,
             data: buyer,
         });
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `error signing in :${error}`,
         });
     }
@@ -50,31 +51,31 @@ const signInBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             if (buyer === null || buyer === void 0 ? void 0 : buyer.verify) {
                 const comp = yield (0, bcryptjs_1.compare)(password, buyer === null || buyer === void 0 ? void 0 : buyer.password);
                 if (comp) {
-                    return res.status(201).json({
+                    return res.status(mainError_1.HTTP.CREATED).json({
                         message: `welcome ${buyer.name}`,
                         data: buyer,
                     });
                 }
                 else {
-                    return res.status(404).json({
+                    return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                         message: `In correct password`,
                     });
                 }
             }
             else {
-                return res.status(404).json({
+                return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                     message: `you are not verified as a buyer`,
                 });
             }
         }
         else {
-            return res.status(404).json({
+            return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                 message: `please check your email`,
             });
         }
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `error signing in :${error.message}`,
         });
     }
@@ -83,14 +84,14 @@ exports.signInBuyer = signInBuyer;
 const getAllBuyers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const buyer = yield buyerModel_1.default.find();
-        return res.status(200).json({
+        return res.status(mainError_1.HTTP.OK).json({
             message: "all buyers gotten",
             data: buyer,
             allBuyer: buyer === null || buyer === void 0 ? void 0 : buyer.length,
         });
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `error signing in :${error}`,
         });
     }
@@ -113,7 +114,7 @@ const UpdateOneBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 .sort({
                 cretedAt: -1,
             });
-            return res.status(201).json({
+            return res.status(mainError_1.HTTP.CREATED).json({
                 message: " buyer updated",
                 data: update,
             });
@@ -137,13 +138,13 @@ const getOneBuyer = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const buyer = yield buyerModel_1.default.findById(buyerID).sort({
             cretedAt: -1,
         });
-        return res.status(200).json({
+        return res.status(mainError_1.HTTP.OK).json({
             message: "one buyer gotten",
             data: buyer,
         });
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `can't get one buyer ${error} `,
         });
     }

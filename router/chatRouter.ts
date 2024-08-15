@@ -7,7 +7,7 @@ import {
 
 const router: Router = express.Router();
 
-router.route("/:userID/:friendID/create-chat").post(createChat);
+router.route("").post(createChat);
 
 router.route("/:userID/get-chat").get(getChat);
 

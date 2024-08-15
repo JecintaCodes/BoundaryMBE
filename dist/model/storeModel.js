@@ -12,7 +12,7 @@ const storeModel = new mongoose_1.Schema({
     storeEmail: {
         type: String,
         require: true,
-        //   unique: true,
+        unique: true,
         lowercase: true,
     },
     storeImg: {
@@ -49,7 +49,13 @@ const storeModel = new mongoose_1.Schema({
     admins: [
         {
             type: mongoose_1.Types.ObjectId,
-            ref: "users",
+            ref: "admins",
+        },
+    ],
+    buyers: [
+        {
+            type: mongoose_1.Types.ObjectId,
+            ref: "buyers",
         },
     ],
 }, { timestamps: true });

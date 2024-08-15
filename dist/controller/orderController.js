@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createOrder = void 0;
 const Orders_1 = __importDefault(require("../model/Orders"));
 const buyerModel_1 = __importDefault(require("../model/buyerModel"));
+const mainError_1 = require("../error/mainError");
 const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { buyerID, storeID, productID } = req.params;
@@ -39,7 +40,7 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             // console.log(c)
             // console.log("starting here")
             // console.log("")
-            return res.status(200).json({
+            return res.status(mainError_1.HTTP.CREATED).json({
                 message: `your order and it was ${order === null || order === void 0 ? void 0 : order.status} is successfull ${buyer === null || buyer === void 0 ? void 0 : buyer.name}`,
                 data: order,
             });
@@ -50,13 +51,13 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             // }
         }
         else {
-            return res.status(404).json({
+            return res.status(mainError_1.HTTP.BAD_REQUEST).json({
                 message: `you did not click on any store   `,
             });
         }
     }
     catch (error) {
-        return res.status(404).json({
+        return res.status(mainError_1.HTTP.BAD_REQUEST).json({
             message: `your order did not create due to ${error}`,
         });
     }

@@ -22,7 +22,10 @@ const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     var _a;
     try {
         const { userID } = req.params;
-        const { storeDetail, storeImgID, storeImg, category, storeUrl, storeSocialMediaAcc, storeName, storeEmail, } = req.body;
+        const { storeDetail, 
+        // storeImgID,
+        // storeImg,
+        category, storeUrl, storeSocialMediaAcc, storeName, storeEmail, } = req.body;
         const { secure_url, public_id } = yield (0, stream_1.streamUpload)(req);
         const user = yield userModel_1.default.findById(userID);
         if (user) {
@@ -37,7 +40,7 @@ const createStore = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 verify: true,
                 category,
             });
-            (_a = user === null || user === void 0 ? void 0 : user.stores) === null || _a === void 0 ? void 0 : _a.push(store === null || store === void 0 ? void 0 : store._id);
+            (_a = user === null || user === void 0 ? void 0 : user.stores) === null || _a === void 0 ? void 0 : _a.push(store);
             user.save();
             return res.status(201).json({
                 message: `${user === null || user === void 0 ? void 0 : user.name} created ${store === null || store === void 0 ? void 0 : store.storeName} `,
